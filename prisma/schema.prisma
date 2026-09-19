@@ -1,0 +1,515 @@
+generator client {
+    provider = "prisma-client"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum PropertyType {
+    BOARDING_HOUSE
+    APARTMENT
+    DORMITORY
+    BEDSPACE
+    HOUSE
+    COMMERCIAL
+    OTHER
+}
+
+enum UnitStatus {
+    ACTIVE
+    INACTIVE
+}
+
+enum RentableSpaceStatus {
+    AVAILABLE
+    OCCUPIED
+    INACTIVE
+}
+
+enum LeaseStatus {
+    ACTIVE
+    ENDED
+    CANCELLED
+}
+
+enum RentChargeStatus {
+    UPCOMING
+    DUE
+    PARTIALLY_PAID
+    PAID
+    OVERDUE
+    CANCELLED
+}
+
+enum PaymentMethod {
+    CASH
+    GCASH
+    MAYA
+    BANK_TRANSFER
+    OTHER
+}
+
+enum ExpenseCategory {
+    MAINTENANCE
+    REPAIR
+    ELECTRICITY
+    WATER
+    INTERNET
+    SALARY
+    SUPPLIES
+    TAX
+    OTHER
+}
+
+// ============================================================
+// USER
+// ============================================================
+
+model User {
+    id String @id @default(cuid())
+
+    // Better Auth
+    name      String
+    email         String  @unique
+    emailVerified Boolean @default(false)
+    image         String?
+
+    // Abang-specific
+    phone String?
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    // Better Auth
+    sessions Session[]
+    accounts Account[]
+
+    // Abang
+    landlordAccount LandlordAccount?
+}
+
+// ============================================================
+// BETTER AUTH
+// ============================================================
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+// ============================================================
+// LANDLORD ACCOUNT
+// ============================================================
+
+model LandlordAccount {
+    id String @id @default(cuid())
+
+    userId String @unique
+
+    displayName String?
+    phone       String?
+
+    timezone String @default("Asia/Manila")
+    currency String @default("PHP")
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+    properties Property[]
+    tenants    Tenant[]
+    payments   Payment[]
+    expenses   Expense[]
+
+    @@index([deletedAt])
+}
+
+// ============================================================
+// PROPERTY
+// ============================================================
+
+model Property {
+    id String @id @default(cuid())
+
+    landlordAccountId String
+
+    name String
+    type PropertyType
+
+    addressLine1 String?
+    addressLine2 String?
+    barangay     String?
+    city         String?
+    province     String?
+    postalCode   String?
+
+    description String?
+
+    isActive Boolean @default(true)
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    landlordAccount LandlordAccount @relation(fields: [landlordAccountId], references: [id], onDelete: Restrict)
+
+    units    Unit[]
+    expenses Expense[]
+
+    @@index([landlordAccountId])
+    @@index([landlordAccountId, isActive])
+    @@index([deletedAt])
+}
+
+// ============================================================
+// UNIT
+//
+// A Unit can be:
+// Room 101
+// Apartment 4B
+// Commercial Unit A
+//
+// The actual thing rented is RentableSpace.
+// ============================================================
+
+model Unit {
+    id String @id @default(cuid())
+
+    propertyId String
+
+    name        String
+    floor       String?
+    description String?
+
+    status UnitStatus @default(ACTIVE)
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    property       Property        @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+    rentableSpaces RentableSpace[]
+
+    @@unique([propertyId, name])
+    @@index([propertyId])
+    @@index([deletedAt])
+}
+
+// ============================================================
+// RENTABLE SPACE
+//
+// Examples:
+//
+// Entire Unit
+// Entire Room
+// Bed A
+// Bed B
+//
+// This allows both apartments and boarding houses.
+// ============================================================
+
+model RentableSpace {
+    id String @id @default(cuid())
+
+    unitId String
+
+    name String
+
+    defaultRent Decimal? @db.Decimal(12, 2)
+
+    status RentableSpaceStatus @default(AVAILABLE)
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    unit Unit @relation(fields: [unitId], references: [id], onDelete: Restrict)
+
+    leases Lease[]
+
+    @@unique([unitId, name])
+    @@index([unitId])
+    @@index([status])
+    @@index([deletedAt])
+}
+
+// ============================================================
+// TENANT
+// ============================================================
+
+model Tenant {
+    id String @id @default(cuid())
+
+    landlordAccountId String
+
+    fullName String
+    phone    String?
+    email    String?
+
+    emergencyContactName  String?
+    emergencyContactPhone String?
+
+    notes String?
+
+    isActive Boolean @default(true)
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    landlordAccount LandlordAccount @relation(fields: [landlordAccountId], references: [id], onDelete: Restrict)
+
+    leases   Lease[]
+    payments Payment[]
+
+    @@index([landlordAccountId])
+    @@index([landlordAccountId, fullName])
+    @@index([deletedAt])
+}
+
+// ============================================================
+// LEASE
+// ============================================================
+
+model Lease {
+    id String @id @default(cuid())
+
+    tenantId        String
+    rentableSpaceId String
+
+    startDate DateTime
+    endDate   DateTime?
+
+    monthlyRent Decimal @db.Decimal(12, 2)
+
+    // 1 - 31
+    dueDay Int
+
+    securityDeposit Decimal? @db.Decimal(12, 2)
+
+    status LeaseStatus @default(ACTIVE)
+
+    notes String?
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    endedAt   DateTime?
+    deletedAt DateTime?
+
+    tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+    rentableSpace RentableSpace @relation(fields: [rentableSpaceId], references: [id], onDelete: Restrict)
+
+    rentCharges RentCharge[]
+
+    @@index([tenantId])
+    @@index([rentableSpaceId])
+    @@index([rentableSpaceId, status])
+    @@index([status])
+    @@index([deletedAt])
+}
+
+// ============================================================
+// RENT CHARGE
+//
+// Represents ONE billing period.
+//
+// Example:
+// September 2026 rent = ₱5,000
+// ============================================================
+
+model RentCharge {
+    id String @id @default(cuid())
+
+    leaseId String
+
+    // Store the billing period explicitly.
+    periodYear  Int
+    periodMonth Int
+
+    amount Decimal @db.Decimal(12, 2)
+
+    dueDate DateTime
+
+    status RentChargeStatus @default(UPCOMING)
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    lease Lease @relation(fields: [leaseId], references: [id], onDelete: Restrict)
+
+    allocations PaymentAllocation[]
+
+    // Prevent September rent from accidentally being
+    // generated twice for the same lease.
+    @@unique([leaseId, periodYear, periodMonth])
+    @@index([leaseId])
+    @@index([dueDate])
+    @@index([status])
+    @@index([deletedAt])
+}
+
+// ============================================================
+// PAYMENT
+//
+// Represents actual money received by the landlord.
+//
+// A payment can potentially pay multiple RentCharges.
+// ============================================================
+
+model Payment {
+    id String @id @default(cuid())
+
+    landlordAccountId String
+    tenantId          String
+
+    amount Decimal @db.Decimal(12, 2)
+
+    method PaymentMethod
+
+    paidAt DateTime
+
+    referenceNumber String?
+    notes           String?
+
+    // Used to protect against accidental duplicate submissions.
+    idempotencyKey String? @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Financial history should normally be reversed rather
+    // than physically deleted.
+    voidedAt   DateTime?
+    voidReason String?
+
+    landlordAccount LandlordAccount @relation(fields: [landlordAccountId], references: [id], onDelete: Restrict)
+
+    tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+    allocations PaymentAllocation[]
+
+    @@index([landlordAccountId])
+    @@index([tenantId])
+    @@index([paidAt])
+    @@index([voidedAt])
+}
+
+// ============================================================
+// PAYMENT ALLOCATION
+//
+// Connects a payment to one or more rent charges.
+//
+// Example:
+//
+// Payment ₱7,000
+//
+// ₱2,000 -> August
+// ₱5,000 -> September
+// ============================================================
+
+model PaymentAllocation {
+    id String @id @default(cuid())
+
+    paymentId    String
+    rentChargeId String
+
+    amount Decimal @db.Decimal(12, 2)
+
+    createdAt DateTime @default(now())
+
+    payment Payment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+
+    rentCharge RentCharge @relation(fields: [rentChargeId], references: [id], onDelete: Restrict)
+
+    @@unique([paymentId, rentChargeId])
+    @@index([paymentId])
+    @@index([rentChargeId])
+}
+
+// ============================================================
+// EXPENSE
+// ============================================================
+
+model Expense {
+    id String @id @default(cuid())
+
+    landlordAccountId String
+    propertyId        String
+
+    category ExpenseCategory
+
+    description String
+
+    amount Decimal @db.Decimal(12, 2)
+
+    expenseDate DateTime
+
+    notes String?
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    landlordAccount LandlordAccount @relation(fields: [landlordAccountId], references: [id], onDelete: Restrict)
+
+    property Property @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+
+    @@index([landlordAccountId])
+    @@index([propertyId])
+    @@index([expenseDate])
+    @@index([deletedAt])
+}

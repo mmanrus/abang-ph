@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: abang-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: abang
+      POSTGRES_PASSWORD: abang_dev_password
+      POSTGRES_DB: abang_dev
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - abang_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  abang_postgres_data:
