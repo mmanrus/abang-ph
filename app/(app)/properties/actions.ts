@@ -2,6 +2,7 @@
 
 import { requireLandlord } from "@/lib/auth/require-landlord";
 import { prisma } from "@/lib/db/prisma";
+import { AppError } from "@/lib/errors";
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -46,7 +47,7 @@ export async function createProperty(
   ).trim();
 
   if (!name) {
-    throw new Error(
+    throw new AppError(
       "Property name is required.",
     );
   }
@@ -97,7 +98,7 @@ export async function createUnit(
   ).trim();
 
   if (!name) {
-    throw new Error(
+    throw new AppError(
       "Unit or room name is required.",
     );
   }
@@ -116,7 +117,7 @@ export async function createUnit(
     });
 
   if (!property) {
-    throw new Error(
+    throw new AppError(
       "Property not found.",
     );
   }
@@ -153,7 +154,7 @@ export async function createRentableSpace(
   const rent = Number(rentInput);
 
   if (!name) {
-    throw new Error(
+    throw new AppError(
       "Rentable space name is required.",
     );
   }
@@ -162,7 +163,7 @@ export async function createRentableSpace(
     !Number.isFinite(rent) ||
     rent < 0
   ) {
-    throw new Error(
+    throw new AppError(
       "Enter a valid monthly rent.",
     );
   }
@@ -189,7 +190,7 @@ export async function createRentableSpace(
     });
 
   if (!unit) {
-    throw new Error(
+    throw new AppError(
       "Unit not found.",
     );
   }

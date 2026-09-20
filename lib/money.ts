@@ -1,3 +1,21 @@
+/**
+ * Converts a peso amount into integer centavos.
+ *
+ * MONEY SAFETY:
+ * JavaScript floating-point numbers are not reliable for exact
+ * financial arithmetic:
+ *
+ *   0.1 + 0.2 !== 0.3
+ *
+ * Abang PH therefore performs application-level calculations using
+ * integer centavos:
+ *
+ *   ₱3,000.00 -> 300000n
+ *
+ * This prevents rounding errors when calculating rent balances,
+ * payment allocations, totals, and outstanding amounts.
+ */
+
 export function moneyToCents(
   value: string | number | { toString(): string },
 ) {

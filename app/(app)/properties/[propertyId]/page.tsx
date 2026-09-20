@@ -7,9 +7,29 @@ import {
 } from "lucide-react";
 
 import { notFound } from "next/navigation";
+import {
+  SuccessBanner,
+} from "@/components/feedback/success-banner";
 
+import { DestructiveActionForm } from "@/components/forms/destructive-action-form";
 import { requireLandlord } from "@/lib/auth/require-landlord";
 import { prisma } from "@/lib/db/prisma";
+import {
+  UnitManagementCard,
+} from "@/components/properties/unit-management-card";
+
+import {
+  archivePropertyAction,
+} from "../manage-actions";
+import {
+  SubmitButton,
+} from "@/components/forms/submit-button";
+
+import {
+  inputClass,
+  primaryButtonClass,
+  secondaryButtonClass,
+} from "@/lib/ui-classes";
 
 import {
   createRentableSpace,
@@ -20,12 +40,23 @@ type Props = {
   params: Promise<{
     propertyId: string;
   }>;
+
+  searchParams: Promise<{
+    success?: string;
+  }>;
 };
 
 export default async function PropertyPage({
   params,
+  searchParams,
 }: Props) {
-  const { propertyId } = await params;
+  const {
+    propertyId,
+  } =
+    await params;
+
+  const query =
+    await searchParams;
 
   const { landlord } =
     await requireLandlord();
@@ -91,28 +122,52 @@ export default async function PropertyPage({
         <ArrowLeft size={17} />
         Properties
       </Link>
+      <SuccessBanner
+        code={
+          query.success
+        }
+      />
+      <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-start gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
+            <Building2 size={23} />
+          </div>
 
-      <div className="mt-5 flex items-start gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
-          <Building2 size={23} />
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight text-zinc-950">
+              {property.name}
+            </h1>
+
+            <p className="mt-1 text-sm text-zinc-500">
+              {[
+                property.addressLine1,
+                property.barangay,
+                property.city,
+                property.province,
+              ]
+                .filter(Boolean)
+                .join(", ") || "No address added"}
+            </p>
+          </div>
         </div>
 
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-950">
-            {property.name}
-          </h1>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href={`/properties/${property.id}/edit`}
+            className="rounded-xl border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
+          >
+            Edit property
+          </Link>
 
-          <p className="mt-1 text-sm text-zinc-500">
-            {[
-              property.addressLine1,
-              property.barangay,
-              property.city,
-              property.province,
-            ]
-              .filter(Boolean)
-              .join(", ") ||
-              "No address added"}
-          </p>
+          <DestructiveActionForm
+            action={archivePropertyAction.bind(
+              null,
+              property.id,
+            )}
+            confirmMessage="Archive this property? Its historical leases, payments, expenses, and rent records will be preserved."
+            label="Archive property"
+            pendingText="Archiving..."
+          />
         </div>
       </div>
 
@@ -138,145 +193,132 @@ export default async function PropertyPage({
         <h2 className="font-semibold text-zinc-950">
           Add room or unit
         </h2>
-
         <form
           action={createUnit.bind(
             null,
             property.id,
           )}
-          className="mt-4 grid gap-3 sm:grid-cols-[1fr_180px_auto]"
+          className="grid gap-3 sm:grid-cols-[1fr_180px_auto]"
         >
-          <input
-            name="name"
-            required
-            placeholder="Room 101"
-            className="rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none focus:border-emerald-500"
-          />
+          <div>
+            <label
+              htmlFor="new-unit-name"
+              className="sr-only"
+            >
+              Room or unit name
+            </label>
 
-          <input
-            name="floor"
-            placeholder="Floor"
-            className="rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none focus:border-emerald-500"
-          />
+            <input
+              id="new-unit-name"
+              name="name"
+              required
+              placeholder="Room 101"
+              className={inputClass}
+            />
+          </div>
 
-          <button
-            type="submit"
-            className="rounded-xl bg-zinc-950 px-5 py-3 text-sm font-medium text-white"
+          <div>
+            <label
+              htmlFor="new-unit-floor"
+              className="sr-only"
+            >
+              Floor
+            </label>
+
+            <input
+              id="new-unit-floor"
+              name="floor"
+              placeholder="1st Floor"
+              className={inputClass}
+            />
+          </div>
+
+          <SubmitButton
+            pendingText="Adding..."
+            className={
+              primaryButtonClass
+            }
           >
             Add room
-          </button>
+          </SubmitButton>
         </form>
       </section>
 
       {/* ROOMS */}
       <div className="mt-6 space-y-4">
-        {property.units.map(
-          (unit) => (
-            <section
-              key={unit.id}
-              className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"
-            >
-              <div className="border-b border-zinc-100 px-5 py-4">
-                <h2 className="font-semibold text-zinc-950">
-                  {unit.name}
-                </h2>
+        {property.units.length ===
+          0 ? (
+          <div className="rounded-2xl border border-dashed border-zinc-300 bg-white px-6 py-12 text-center">
+            <p className="font-medium text-zinc-900">
+              No rooms or units yet
+            </p>
 
-                {unit.floor && (
-                  <p className="mt-1 text-xs text-zinc-500">
-                    {unit.floor}
-                  </p>
-                )}
-              </div>
-
-              <div className="p-5">
-                {unit.rentableSpaces
-                  .length === 0 ? (
-                  <p className="text-sm text-zinc-500">
-                    No rentable spaces yet.
-                  </p>
-                ) : (
-                  <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                    {unit.rentableSpaces.map(
-                      (space) => (
-                        <div
-                          key={space.id}
-                          className="rounded-xl border border-zinc-200 p-4"
-                        >
-                          <div className="flex items-center gap-3">
-                            <BedDouble
-                              size={19}
-                              className="text-zinc-500"
-                            />
-
-                            <p className="font-medium text-zinc-950">
-                              {space.name}
-                            </p>
-                          </div>
-
-                          <p className="mt-3 text-lg font-semibold text-zinc-950">
-                            {space.defaultRent
-                              ? `₱${Number(
-                                  space.defaultRent,
-                                ).toLocaleString(
-                                  "en-PH",
-                                )}`
-                              : "No rent set"}
-                          </p>
-
-                          <span
-                            className={[
-                              "mt-3 inline-flex rounded-full px-2.5 py-1 text-xs font-medium",
-                              space.status ===
-                              "OCCUPIED"
-                                ? "bg-emerald-50 text-emerald-700"
-                                : "bg-zinc-100 text-zinc-600",
-                            ].join(
-                              " ",
-                            )}
-                          >
-                            {space.status}
-                          </span>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                )}
-
-                <form
-                  action={createRentableSpace.bind(
-                    null,
-                    property.id,
+            <p className="mt-1 text-sm text-zinc-500">
+              Add the first room or unit above.
+            </p>
+          </div>
+        ) : (
+          property.units.map(
+            (unit) => (
+              <UnitManagementCard
+                key={
+                  unit.id
+                }
+                propertyId={
+                  property.id
+                }
+                unit={{
+                  id:
                     unit.id,
-                  )}
-                  className="mt-5 grid gap-3 border-t border-zinc-100 pt-5 sm:grid-cols-[1fr_180px_auto]"
-                >
-                  <input
-                    name="name"
-                    required
-                    placeholder="Bed A / Entire Unit"
-                    className="rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none focus:border-emerald-500"
-                  />
 
-                  <input
-                    name="defaultRent"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    required
-                    placeholder="Monthly rent"
-                    className="rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none focus:border-emerald-500"
-                  />
+                  name:
+                    unit.name,
 
-                  <button
-                    type="submit"
-                    className="rounded-xl border border-zinc-200 bg-white px-5 py-3 text-sm font-medium text-zinc-800 hover:bg-zinc-50"
-                  >
-                    Add space
-                  </button>
-                </form>
-              </div>
-            </section>
-          ),
+                  floor:
+                    unit.floor,
+
+                  description:
+                    unit.description,
+
+                  /**
+                   * Server → Client boundary
+                   *
+                   * Prisma Decimal is a special object.
+                   *
+                   * Convert it to a plain string before
+                   * passing it to a Client Component.
+                   */
+                  rentableSpaces:
+                    unit.rentableSpaces.map(
+                      (space) => ({
+                        id:
+                          space.id,
+
+                        name:
+                          space.name,
+
+                        defaultRent:
+                          space.defaultRent?.toString() ??
+                          null,
+
+                        status:
+                          space.status,
+                      }),
+                    ),
+                }}
+                addSpaceForm={
+                  <AddSpaceForm
+                    propertyId={
+                      property.id
+                    }
+                    unitId={
+                      unit.id
+                    }
+                  />
+                }
+              />
+            ),
+          )
         )}
       </div>
     </div>
@@ -300,5 +342,75 @@ function Metric({
         {label}
       </p>
     </div>
+  );
+}
+function AddSpaceForm({
+  propertyId,
+  unitId,
+}: {
+  propertyId: string;
+  unitId: string;
+}) {
+  return (
+    <details>
+      <summary className="cursor-pointer rounded-lg text-sm font-medium text-emerald-700 outline-none focus-visible:ring-4 focus-visible:ring-emerald-500/20">
+        + Add rental space
+      </summary>
+
+      <form
+        action={createRentableSpace.bind(
+          null,
+          propertyId,
+          unitId,
+        )}
+        className="mt-4 grid gap-3 sm:grid-cols-[1fr_180px_auto]"
+      >
+        <div>
+          <label
+            htmlFor={`space-name-${unitId}`}
+            className="sr-only"
+          >
+            Rental space name
+          </label>
+
+          <input
+            id={`space-name-${unitId}`}
+            name="name"
+            required
+            placeholder="Bed A / Entire Unit"
+            className={inputClass}
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor={`space-rent-${unitId}`}
+            className="sr-only"
+          >
+            Default monthly rent
+          </label>
+
+          <input
+            id={`space-rent-${unitId}`}
+            name="defaultRent"
+            type="number"
+            min="0"
+            step="0.01"
+            required
+            placeholder="Monthly rent"
+            className={inputClass}
+          />
+        </div>
+
+        <SubmitButton
+          pendingText="Adding..."
+          className={
+            secondaryButtonClass
+          }
+        >
+          Add space
+        </SubmitButton>
+      </form>
+    </details>
   );
 }

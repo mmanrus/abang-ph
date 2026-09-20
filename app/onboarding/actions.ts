@@ -2,6 +2,7 @@
 
 import { requireUser } from "@/lib/auth/require-user";
 import { prisma } from "@/lib/db/prisma";
+import { AppError } from "@/lib/errors";
 import { redirect } from "next/navigation";
 
 const allowedPropertyTypes = {
@@ -55,11 +56,11 @@ export async function completeOnboarding(
   ).trim();
 
   if (!displayName) {
-    throw new Error("Business or landlord name is required.");
+    throw new AppError("Business or landlord name is required.");
   }
 
   if (!propertyName) {
-    throw new Error("Property name is required.");
+    throw new AppError("Property name is required.");
   }
 
   const propertyType =

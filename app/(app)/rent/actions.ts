@@ -1,17 +1,15 @@
 "use server";
 
 import {
-  getCurrentManilaPeriod,
-} from "@/lib/billing-date";
-
-import {
   requireLandlord,
 } from "@/lib/auth/require-landlord";
 
 import {
   prisma,
 } from "@/lib/db/prisma";
-
+import {
+  formatRentPeriod,
+} from "@/lib/rent-period";
 import {
   generateRentChargesForPeriod,
   recordRentPayment,
@@ -49,16 +47,48 @@ function parseDateInput(
 
   return date;
 }
-
-export async function generateCurrentRentCharges() {
+export async function generateRentChargesAction(
+  formData: FormData,
+) {
+  /**
+   * AUTHORIZATION
+   * -------------
+   *
+   * The landlord ID comes only from the authenticated session.
+   *
+   * Notice the form does NOT contain:
+   *
+   *   landlordAccountId
+   *
+   * That's intentional.
+   */
   const { landlord } =
     await requireLandlord();
 
-  const {
-    year,
-    month,
-  } =
-    getCurrentManilaPeriod();
+  const year =
+    Number(
+      formData.get(
+        "year",
+      ),
+    );
+
+  const month =
+    Number(
+      formData.get(
+        "month",
+      ),
+    );
+
+  if (
+    !Number.isInteger(year) ||
+    !Number.isInteger(month) ||
+    month < 1 ||
+    month > 12
+  ) {
+    throw new Error(
+      "Invalid billing period.",
+    );
+  }
 
   await generateRentChargesForPeriod({
     landlordAccountId:
@@ -67,6 +97,19 @@ export async function generateCurrentRentCharges() {
     year,
     month,
   });
+
+  const period =
+    formatRentPeriod({
+      year,
+      month,
+    });
+
+  /**
+   * Revalidate the URL the landlord is currently viewing.
+   */
+  revalidatePath(
+    `/rent?period=${period}`,
+  );
 
   revalidatePath(
     "/rent",
@@ -136,7 +179,7 @@ export async function recordChargePayment(
 
   const method =
     paymentMethods[
-      methodInput as keyof typeof paymentMethods
+    methodInput as keyof typeof paymentMethods
     ];
 
   if (!method) {

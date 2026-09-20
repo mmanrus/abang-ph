@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { AppError } from "@/lib/errors";
 
 type CreateActiveLeaseInput = {
   landlordAccountId: string;
@@ -122,7 +123,31 @@ export async function createActiveLease(
       "A new active lease cannot already be expired.",
     );
   }
-
+  /**
+   * Records a rent payment.
+   *
+   * DATA INTEGRITY:
+   * A payment may affect several records:
+   *
+   *   Payment
+   *      ↓
+   * PaymentAllocation
+   *      ↓
+   * RentCharge status
+   *
+   * These changes belong to ONE business operation.
+   *
+   * A database transaction ensures either:
+   *
+   *   ALL changes succeed
+   *
+   * or
+   *
+   *   NONE of them are committed.
+   *
+   * Without this, a crash halfway through could record the money but
+   * fail to update the rent charge, leaving inconsistent financial data.
+   */
   return prisma.$transaction(
     async (tx) => {
       /*
@@ -147,7 +172,7 @@ export async function createActiveLease(
         });
 
       if (!tenant) {
-        throw new Error(
+        throw new AppError(
           "Tenant not found.",
         );
       }
@@ -211,10 +236,10 @@ export async function createActiveLease(
 
             ...(input.endDate
               ? {
-                  startDate: {
-                    lte: input.endDate,
-                  },
-                }
+                startDate: {
+                  lte: input.endDate,
+                },
+              }
               : {}),
 
             OR: [

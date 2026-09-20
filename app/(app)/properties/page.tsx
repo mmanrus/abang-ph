@@ -4,20 +4,89 @@ import {
   Building2,
   ChevronRight,
   Plus,
+  Search,
+  X,
 } from "lucide-react";
 
 import { requireLandlord } from "@/lib/auth/require-landlord";
 import { prisma } from "@/lib/db/prisma";
+import { SuccessBanner } from "@/components/feedback/success-banner";
 
-export default async function PropertiesPage() {
+type Props = {
+  searchParams: Promise<{
+    q?: string;
+    success?: string;
+  }>;
+};
+
+export default async function PropertiesPage({
+  searchParams,
+}: Props) {
+  const params = await searchParams;
+
+  /**
+   * URL SEARCH INPUT
+   * ----------------
+   *
+   * Example:
+   *
+   * /properties?q=Rusiana
+   *
+   * Search parameters come from the browser,
+   * so we normalize them before using them.
+   *
+   * trim() means:
+   *
+   *   "   Rusiana   "
+   *
+   * becomes:
+   *
+   *   "Rusiana"
+   */
+  const q =
+    params.q?.trim() ?? "";
+
+
   const { landlord } =
     await requireLandlord();
 
   const properties =
     await prisma.property.findMany({
       where: {
+        /**
+       * DATA ISOLATION
+       * --------------
+       *
+       * Search NEVER removes our landlord boundary.
+       *
+       * Even if somebody manually changes:
+       *
+       * ?q=something
+       *
+       * this query can only search properties owned by
+       * the authenticated landlord.
+       */
         landlordAccountId: landlord.id,
         deletedAt: null,
+        isActive: true,
+        /**
+       * Only add the OR search conditions when there
+       * is actually a search term.
+       *
+       * If q === "":
+       *
+       * show all active landlord properties.
+       */
+        ...(q ? {
+          OR: [
+            {
+              name: {
+                contains: q,
+                mode: "insensitive"
+              }
+            }
+          ]
+        } : {})
       },
 
       orderBy: {
@@ -71,22 +140,118 @@ export default async function PropertiesPage() {
           </span>
         </Link>
       </div>
+      <SuccessBanner
+        code={
+          params.success
+        }
+      />
+      <form
+        method="GET"
+        className="mt-6"
+      >
+        <div className="flex max-w-2xl gap-2">
+          <div className="relative flex-1">
+            <Search
+              size={17}
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"
+            />
 
-      {properties.length === 0 ? (
-        <div className="mt-8 rounded-2xl border border-dashed border-zinc-300 bg-white px-6 py-14 text-center">
-          <Building2
-            className="mx-auto text-zinc-400"
-            size={36}
-          />
+            <input
+              type="search"
+              name="q"
+              defaultValue={q}
+              placeholder="Search name, barangay, city, province..."
+              className="w-full rounded-xl border border-zinc-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+            />
+          </div>
 
-          <h2 className="mt-4 font-semibold text-zinc-950">
-            No properties yet
-          </h2>
+          <button
+            type="submit"
+            className="rounded-xl border border-zinc-200 bg-white px-5 py-3 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
+          >
+            Search
+          </button>
 
-          <p className="mt-1 text-sm text-zinc-500">
-            Add your first rental property.
-          </p>
+          {q && (
+            <Link
+              href="/properties"
+              aria-label="Clear search"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-500 transition hover:bg-zinc-50 hover:text-zinc-900"
+            >
+              <X size={17} />
+            </Link>
+          )}
         </div>
+      </form>
+      {q && (
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-zinc-500">
+          <span>
+            {properties.length}{" "}
+            {properties.length === 1
+              ? "property"
+              : "properties"}{" "}
+            found for
+          </span>
+
+          <span className="rounded-lg bg-zinc-100 px-2 py-1 font-medium text-zinc-700">
+            &quot;{q}&quot;
+          </span>
+        </div>
+      )}
+      {properties.length === 0 ? (
+        q ? (
+          <div className="mt-8 rounded-2xl border border-dashed border-zinc-300 bg-white px-6 py-14 text-center">
+            <Search
+              size={36}
+              className="mx-auto text-zinc-400"
+            />
+
+            <h2 className="mt-4 font-semibold text-zinc-950">
+              No properties found
+            </h2>
+
+            <p className="mt-2 text-sm text-zinc-500">
+              No property matches{" "}
+              <span className="font-medium text-zinc-700">
+                &quot;{q}&quot;
+              </span>
+              .
+            </p>
+
+            <Link
+              href="/properties"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
+            >
+              <X size={16} />
+
+              Clear search
+            </Link>
+          </div>
+        ) : (
+          <div className="mt-8 rounded-2xl border border-dashed border-zinc-300 bg-white px-6 py-14 text-center">
+            <Building2
+              size={38}
+              className="mx-auto text-zinc-400"
+            />
+
+            <h2 className="mt-4 font-semibold text-zinc-950">
+              No properties yet
+            </h2>
+
+            <p className="mt-2 text-sm text-zinc-500">
+              Add your first rental property to start managing rooms and tenants.
+            </p>
+
+            <Link
+              href="/properties/new"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700"
+            >
+              <Plus size={17} />
+
+              Add property
+            </Link>
+          </div>
+        )
       ) : (
         <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {properties.map(
