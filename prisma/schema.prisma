@@ -72,19 +72,48 @@ enum ExpenseCategory {
 // ============================================================
 
 model User {
-  id              String           @id
-  name            String
-  email           String
-  emailVerified   Boolean          @default(false)
-  image           String?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  sessions        Session[]
-  accounts        Account[]
-  landlordAccount LandlordAccount?
+  id String @id @default(cuid())
 
-  @@unique([email])
-  @@map("user")
+  // Better Auth
+  name          String
+  email         String  @unique
+  emailVerified Boolean @default(false)
+  image         String?
+
+  // Abang-specific
+  phone String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // Better Auth
+  sessions Session[]
+  accounts Account[]
+
+  // Abang
+  landlordAccount LandlordAccount?
+}
+
+// ============================================================
+// BETTER AUTH
+// ============================================================
+
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
 }
 
 model Account {
@@ -107,26 +136,6 @@ model Account {
   @@map("account")
 }
 
-// ============================================================
-// BETTER AUTH
-// ============================================================
-
-model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([token])
-  @@index([userId])
-  @@map("session")
-}
-
 model Verification {
   id         String   @id
   identifier String
@@ -138,6 +147,7 @@ model Verification {
   @@index([identifier])
   @@map("verification")
 }
+
 
 // ============================================================
 // LANDLORD ACCOUNT

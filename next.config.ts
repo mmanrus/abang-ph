@@ -48,17 +48,41 @@ const securityHeaders = [
 
 const nextConfig:
   NextConfig = {
-    async headers() {
-      return [
-        {
-          source:
-            "/(.*)",
+  async headers() {
+    return [
+      /**
+       * SERVICE WORKER
+       *
+       * We do not want a CDN/browser to hold an old sw.js
+       * for a long period.
+       */
+      {
+        source:
+          "/sw.js",
 
-          headers:
-            securityHeaders,
-        },
-      ];
-    },
-  };
+        headers: [
+          {
+            key:
+              "Cache-Control",
+
+            value:
+              "no-cache, no-store, must-revalidate",
+          },
+        ],
+      },
+
+      /**
+       * Global security headers.
+       */
+      {
+        source:
+          "/(.*)",
+
+        headers:
+          securityHeaders,
+      },
+    ];
+  },
+};
 
 export default nextConfig;

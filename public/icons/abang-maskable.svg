@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!--
+    MASKABLE ICON
+
+    Unlike the normal icon, the background fills the entire
+    canvas.
+
+    Android is allowed to crop this image into circles,
+    squircles, rounded rectangles, etc.
+
+    The important "A" stays well inside the safe center area.
+  -->
+  <rect width="512" height="512" fill="#059669"></rect>
+
+  <path d="
+      M166 360
+      L230 156
+      H282
+      L346 360
+      H296
+      L284 316
+      H226
+      L214 360
+      Z
+
+      M238 274
+      H272
+      L255 208
+      Z
+    " fill="white" fill-rule="evenodd"></path>
+</svg>

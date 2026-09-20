@@ -380,7 +380,8 @@ export function AppNavigation({
       {/* MOBILE HEADER                */}
       {/* ============================= */}
 
-      <header className="sticky top-0 z-30 border-b border-zinc-200 bg-white/95 backdrop-blur lg:hidden">
+      <header className="sticky top-0 z-30 border-b border-zinc-200 bg-white/95 pt-[env(safe-area-inset-top)] backdrop-blur lg:hidden">
+        <div className="flex min-h-14 items-center px-4">
         <Link
           href="/dashboard"
           className="flex min-w-0 items-center gap-2.5"
@@ -401,6 +402,7 @@ export function AppNavigation({
             </p>
           </div>
         </Link>
+        </div>
       </header>
 
       {/* ============================= */}

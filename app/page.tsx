@@ -1,4 +1,7 @@
 import Link from "next/link";
+import {
+  InstallAbang,
+} from "@/components/pwa/install-abang";
 
 import {
   ArrowRight,
@@ -109,6 +112,9 @@ export default async function HomePage() {
                     aria-hidden="true"
                   />
                 </Link>
+                <InstallAbang
+                  variant="compact"
+                />
               </>
             )}
           </nav>

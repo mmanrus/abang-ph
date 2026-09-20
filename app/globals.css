@@ -23,4 +23,33 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  min-height: 100dvh;
+  background: #ffffff;
+}
+
+/*
+ * PWA / MOBILE ROOT
+ * -----------------
+ *
+ * Keeping html/body backgrounds explicit prevents strange
+ * flashes around the browser/status-bar area while the app
+ * is launching.
+ */
+
+html {
+  background: #ffffff;
+}
+
+/*
+ * PWA INSTALL UI
+ * --------------
+ *
+ * When Abang is already running in standalone mode, there is
+ * no reason to offer "Install Abang PH" again.
+ */
+
+@media (display-mode: standalone) {
+  .pwa-install-only {
+    display: none !important;
+  }
 }

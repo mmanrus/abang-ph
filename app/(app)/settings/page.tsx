@@ -2,6 +2,9 @@ import {
   ImageIcon,
   ShieldCheck,
 } from "lucide-react";
+import {
+  InstallAbang,
+} from "@/components/pwa/install-abang";
 
 import type {
   Metadata,
@@ -73,6 +76,7 @@ export default async function SettingsPage({
         {/* ===================================== */}
 
         <aside className="space-y-4">
+
           <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
             <p className="text-xs font-medium uppercase tracking-wide text-zinc-400">
               Workspace preview
@@ -96,7 +100,7 @@ export default async function SettingsPage({
               </div>
             </div>
           </section>
-
+          <InstallAbang />
           {/* LOGO READY */}
           <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-100 text-zinc-500">
