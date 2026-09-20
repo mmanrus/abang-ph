@@ -32,7 +32,13 @@ import {
   parsePage,
 } from "@/lib/pagination";
 import { Pagination } from "@/components/ui/pagination";
+import type {
+  Metadata,
+} from "next";
 
+export const metadata: Metadata = {
+  title: "Payments",
+};
 type Props = {
   searchParams: Promise<{
     q?: string;

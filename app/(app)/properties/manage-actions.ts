@@ -41,6 +41,7 @@ export async function updatePropertyAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  void _state;
   const { landlord } =
     await requireLandlord();
 
@@ -134,6 +135,9 @@ export async function archivePropertyAction(
   _state: ActionState,
   _formData: FormData,
 ): Promise<ActionState> {
+  void _state;
+  void _formData;
+
   const { landlord } =
     await requireLandlord();
 
@@ -226,6 +230,9 @@ export async function archiveUnitAction(
   _state: ActionState,
   _formData: FormData,
 ): Promise<ActionState> {
+  void _state;
+  void _formData;
+
   const { landlord } =
     await requireLandlord();
   /**
@@ -292,6 +299,8 @@ export async function updateSpaceAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  void _state;
+
   const { landlord } =
     await requireLandlord();
 
@@ -347,6 +356,8 @@ export async function archiveSpaceAction(
   _state: ActionState,
   _formData: FormData,
 ): Promise<ActionState> {
+  void _state;
+  void _formData;
   const { landlord } =
     await requireLandlord();
 

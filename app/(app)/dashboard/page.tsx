@@ -22,7 +22,13 @@ import {
   getLandlordDashboard,
 } from "@/server/services/dashboard.service";
 import { StatusBadge } from "@/components/ui/status-badge";
+import type {
+  Metadata,
+} from "next";
 
+export const metadata: Metadata = {
+  title: "Dashboard",
+};
 export default async function DashboardPage() {
   const {
     user,

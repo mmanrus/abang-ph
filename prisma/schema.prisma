@@ -1,10 +1,10 @@
 generator client {
-    provider = "prisma-client"
-    output   = "../generated/prisma"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
-    provider = "postgresql"
+  provider = "postgresql"
 }
 
 // ============================================================
@@ -12,59 +12,59 @@ datasource db {
 // ============================================================
 
 enum PropertyType {
-    BOARDING_HOUSE
-    APARTMENT
-    DORMITORY
-    BEDSPACE
-    HOUSE
-    COMMERCIAL
-    OTHER
+  BOARDING_HOUSE
+  APARTMENT
+  DORMITORY
+  BEDSPACE
+  HOUSE
+  COMMERCIAL
+  OTHER
 }
 
 enum UnitStatus {
-    ACTIVE
-    INACTIVE
+  ACTIVE
+  INACTIVE
 }
 
 enum RentableSpaceStatus {
-    AVAILABLE
-    OCCUPIED
-    INACTIVE
+  AVAILABLE
+  OCCUPIED
+  INACTIVE
 }
 
 enum LeaseStatus {
-    ACTIVE
-    ENDED
-    CANCELLED
+  ACTIVE
+  ENDED
+  CANCELLED
 }
 
 enum RentChargeStatus {
-    UPCOMING
-    DUE
-    PARTIALLY_PAID
-    PAID
-    OVERDUE
-    CANCELLED
+  UPCOMING
+  DUE
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
 }
 
 enum PaymentMethod {
-    CASH
-    GCASH
-    MAYA
-    BANK_TRANSFER
-    OTHER
+  CASH
+  GCASH
+  MAYA
+  BANK_TRANSFER
+  OTHER
 }
 
 enum ExpenseCategory {
-    MAINTENANCE
-    REPAIR
-    ELECTRICITY
-    WATER
-    INTERNET
-    SALARY
-    SUPPLIES
-    TAX
-    OTHER
+  MAINTENANCE
+  REPAIR
+  ELECTRICITY
+  WATER
+  INTERNET
+  SALARY
+  SUPPLIES
+  TAX
+  OTHER
 }
 
 // ============================================================
@@ -72,47 +72,19 @@ enum ExpenseCategory {
 // ============================================================
 
 model User {
-    id String @id @default(cuid())
+  id              String           @id
+  name            String
+  email           String
+  emailVerified   Boolean          @default(false)
+  image           String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  sessions        Session[]
+  accounts        Account[]
+  landlordAccount LandlordAccount?
 
-    // Better Auth
-    name      String
-    email         String  @unique
-    emailVerified Boolean @default(false)
-    image         String?
-
-    // Abang-specific
-    phone String?
-
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    deletedAt DateTime?
-
-    // Better Auth
-    sessions Session[]
-    accounts Account[]
-
-    // Abang
-    landlordAccount LandlordAccount?
-}
-
-// ============================================================
-// BETTER AUTH
-// ============================================================
-
-model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([token])
-  @@index([userId])
-  @@map("session")
+  @@unique([email])
+  @@map("user")
 }
 
 model Account {
@@ -135,6 +107,26 @@ model Account {
   @@map("account")
 }
 
+// ============================================================
+// BETTER AUTH
+// ============================================================
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
 model Verification {
   id         String   @id
   identifier String
@@ -152,28 +144,28 @@ model Verification {
 // ============================================================
 
 model LandlordAccount {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    userId String @unique
+  userId String @unique
 
-    displayName String?
-    phone       String?
+  displayName String?
+  phone       String?
 
-    timezone String @default("Asia/Manila")
-    currency String @default("PHP")
+  timezone String @default("Asia/Manila")
+  currency String @default("PHP")
 
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
-    user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
 
-    properties Property[]
-    tenants    Tenant[]
-    payments   Payment[]
-    expenses   Expense[]
+  properties Property[]
+  tenants    Tenant[]
+  payments   Payment[]
+  expenses   Expense[]
 
-    @@index([deletedAt])
+  @@index([deletedAt])
 }
 
 // ============================================================
@@ -181,36 +173,36 @@ model LandlordAccount {
 // ============================================================
 
 model Property {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    landlordAccountId String
+  landlordAccountId String
 
-    name String
-    type PropertyType
+  name String
+  type PropertyType
 
-    addressLine1 String?
-    addressLine2 String?
-    barangay     String?
-    city         String?
-    province     String?
-    postalCode   String?
+  addressLine1 String?
+  addressLine2 String?
+  barangay     String?
+  city         String?
+  province     String?
+  postalCode   String?
 
-    description String?
+  description String?
 
-    isActive Boolean @default(true)
+  isActive Boolean @default(true)
 
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
-    landlordAccount LandlordAccount @relation(fields: [landlordAccountId], references: [id], onDelete: Restrict)
+  landlordAccount LandlordAccount @relation(fields: [landlordAccountId], references: [id], onDelete: Restrict)
 
-    units    Unit[]
-    expenses Expense[]
+  units    Unit[]
+  expenses Expense[]
 
-    @@index([landlordAccountId])
-    @@index([landlordAccountId, isActive])
-    @@index([deletedAt])
+  @@index([landlordAccountId])
+  @@index([landlordAccountId, isActive])
+  @@index([deletedAt])
 }
 
 // ============================================================
@@ -225,26 +217,26 @@ model Property {
 // ============================================================
 
 model Unit {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    propertyId String
+  propertyId String
 
-    name        String
-    floor       String?
-    description String?
+  name        String
+  floor       String?
+  description String?
 
-    status UnitStatus @default(ACTIVE)
+  status UnitStatus @default(ACTIVE)
 
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
-    property       Property        @relation(fields: [propertyId], references: [id], onDelete: Restrict)
-    rentableSpaces RentableSpace[]
+  property       Property        @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  rentableSpaces RentableSpace[]
 
-    @@unique([propertyId, name])
-    @@index([propertyId])
-    @@index([deletedAt])
+  @@unique([propertyId, name])
+  @@index([propertyId])
+  @@index([deletedAt])
 }
 
 // ============================================================
@@ -261,28 +253,28 @@ model Unit {
 // ============================================================
 
 model RentableSpace {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    unitId String
+  unitId String
 
-    name String
+  name String
 
-    defaultRent Decimal? @db.Decimal(12, 2)
+  defaultRent Decimal? @db.Decimal(12, 2)
 
-    status RentableSpaceStatus @default(AVAILABLE)
+  status RentableSpaceStatus @default(AVAILABLE)
 
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
-    unit Unit @relation(fields: [unitId], references: [id], onDelete: Restrict)
+  unit Unit @relation(fields: [unitId], references: [id], onDelete: Restrict)
 
-    leases Lease[]
+  leases Lease[]
 
-    @@unique([unitId, name])
-    @@index([unitId])
-    @@index([status])
-    @@index([deletedAt])
+  @@unique([unitId, name])
+  @@index([unitId])
+  @@index([status])
+  @@index([deletedAt])
 }
 
 // ============================================================
@@ -290,33 +282,33 @@ model RentableSpace {
 // ============================================================
 
 model Tenant {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    landlordAccountId String
+  landlordAccountId String
 
-    fullName String
-    phone    String?
-    email    String?
+  fullName String
+  phone    String?
+  email    String?
 
-    emergencyContactName  String?
-    emergencyContactPhone String?
+  emergencyContactName  String?
+  emergencyContactPhone String?
 
-    notes String?
+  notes String?
 
-    isActive Boolean @default(true)
+  isActive Boolean @default(true)
 
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
-    landlordAccount LandlordAccount @relation(fields: [landlordAccountId], references: [id], onDelete: Restrict)
+  landlordAccount LandlordAccount @relation(fields: [landlordAccountId], references: [id], onDelete: Restrict)
 
-    leases   Lease[]
-    payments Payment[]
+  leases   Lease[]
+  payments Payment[]
 
-    @@index([landlordAccountId])
-    @@index([landlordAccountId, fullName])
-    @@index([deletedAt])
+  @@index([landlordAccountId])
+  @@index([landlordAccountId, fullName])
+  @@index([deletedAt])
 }
 
 // ============================================================
@@ -324,41 +316,41 @@ model Tenant {
 // ============================================================
 
 model Lease {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    tenantId        String
-    rentableSpaceId String
+  tenantId        String
+  rentableSpaceId String
 
-    startDate DateTime
-    endDate   DateTime?
+  startDate DateTime
+  endDate   DateTime?
 
-    monthlyRent Decimal @db.Decimal(12, 2)
+  monthlyRent Decimal @db.Decimal(12, 2)
 
-    // 1 - 31
-    dueDay Int
+  // 1 - 31
+  dueDay Int
 
-    securityDeposit Decimal? @db.Decimal(12, 2)
+  securityDeposit Decimal? @db.Decimal(12, 2)
 
-    status LeaseStatus @default(ACTIVE)
+  status LeaseStatus @default(ACTIVE)
 
-    notes String?
+  notes String?
 
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    endedAt   DateTime?
-    deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  endedAt   DateTime?
+  deletedAt DateTime?
 
-    tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
 
-    rentableSpace RentableSpace @relation(fields: [rentableSpaceId], references: [id], onDelete: Restrict)
+  rentableSpace RentableSpace @relation(fields: [rentableSpaceId], references: [id], onDelete: Restrict)
 
-    rentCharges RentCharge[]
+  rentCharges RentCharge[]
 
-    @@index([tenantId])
-    @@index([rentableSpaceId])
-    @@index([rentableSpaceId, status])
-    @@index([status])
-    @@index([deletedAt])
+  @@index([tenantId])
+  @@index([rentableSpaceId])
+  @@index([rentableSpaceId, status])
+  @@index([status])
+  @@index([deletedAt])
 }
 
 // ============================================================
@@ -371,35 +363,35 @@ model Lease {
 // ============================================================
 
 model RentCharge {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    leaseId String
+  leaseId String
 
-    // Store the billing period explicitly.
-    periodYear  Int
-    periodMonth Int
+  // Store the billing period explicitly.
+  periodYear  Int
+  periodMonth Int
 
-    amount Decimal @db.Decimal(12, 2)
+  amount Decimal @db.Decimal(12, 2)
 
-    dueDate DateTime
+  dueDate DateTime
 
-    status RentChargeStatus @default(UPCOMING)
+  status RentChargeStatus @default(UPCOMING)
 
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
-    lease Lease @relation(fields: [leaseId], references: [id], onDelete: Restrict)
+  lease Lease @relation(fields: [leaseId], references: [id], onDelete: Restrict)
 
-    allocations PaymentAllocation[]
+  allocations PaymentAllocation[]
 
-    // Prevent September rent from accidentally being
-    // generated twice for the same lease.
-    @@unique([leaseId, periodYear, periodMonth])
-    @@index([leaseId])
-    @@index([dueDate])
-    @@index([status])
-    @@index([deletedAt])
+  // Prevent September rent from accidentally being
+  // generated twice for the same lease.
+  @@unique([leaseId, periodYear, periodMonth])
+  @@index([leaseId])
+  @@index([dueDate])
+  @@index([status])
+  @@index([deletedAt])
 }
 
 // ============================================================
@@ -411,41 +403,41 @@ model RentCharge {
 // ============================================================
 
 model Payment {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    landlordAccountId String
-    tenantId          String
+  landlordAccountId String
+  tenantId          String
 
-    amount Decimal @db.Decimal(12, 2)
+  amount Decimal @db.Decimal(12, 2)
 
-    method PaymentMethod
+  method PaymentMethod
 
-    paidAt DateTime
+  paidAt DateTime
 
-    referenceNumber String?
-    notes           String?
+  referenceNumber String?
+  notes           String?
 
-    // Used to protect against accidental duplicate submissions.
-    idempotencyKey String? @unique
+  // Used to protect against accidental duplicate submissions.
+  idempotencyKey String? @unique
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    // Financial history should normally be reversed rather
-    // than physically deleted.
-    voidedAt   DateTime?
-    voidReason String?
+  // Financial history should normally be reversed rather
+  // than physically deleted.
+  voidedAt   DateTime?
+  voidReason String?
 
-    landlordAccount LandlordAccount @relation(fields: [landlordAccountId], references: [id], onDelete: Restrict)
+  landlordAccount LandlordAccount @relation(fields: [landlordAccountId], references: [id], onDelete: Restrict)
 
-    tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
 
-    allocations PaymentAllocation[]
+  allocations PaymentAllocation[]
 
-    @@index([landlordAccountId])
-    @@index([tenantId])
-    @@index([paidAt])
-    @@index([voidedAt])
+  @@index([landlordAccountId])
+  @@index([tenantId])
+  @@index([paidAt])
+  @@index([voidedAt])
 }
 
 // ============================================================
@@ -462,22 +454,22 @@ model Payment {
 // ============================================================
 
 model PaymentAllocation {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    paymentId    String
-    rentChargeId String
+  paymentId    String
+  rentChargeId String
 
-    amount Decimal @db.Decimal(12, 2)
+  amount Decimal @db.Decimal(12, 2)
 
-    createdAt DateTime @default(now())
+  createdAt DateTime @default(now())
 
-    payment Payment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
 
-    rentCharge RentCharge @relation(fields: [rentChargeId], references: [id], onDelete: Restrict)
+  rentCharge RentCharge @relation(fields: [rentChargeId], references: [id], onDelete: Restrict)
 
-    @@unique([paymentId, rentChargeId])
-    @@index([paymentId])
-    @@index([rentChargeId])
+  @@unique([paymentId, rentChargeId])
+  @@index([paymentId])
+  @@index([rentChargeId])
 }
 
 // ============================================================
@@ -485,31 +477,31 @@ model PaymentAllocation {
 // ============================================================
 
 model Expense {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    landlordAccountId String
-    propertyId        String
+  landlordAccountId String
+  propertyId        String
 
-    category ExpenseCategory
+  category ExpenseCategory
 
-    description String
+  description String
 
-    amount Decimal @db.Decimal(12, 2)
+  amount Decimal @db.Decimal(12, 2)
 
-    expenseDate DateTime
+  expenseDate DateTime
 
-    notes String?
+  notes String?
 
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
-    landlordAccount LandlordAccount @relation(fields: [landlordAccountId], references: [id], onDelete: Restrict)
+  landlordAccount LandlordAccount @relation(fields: [landlordAccountId], references: [id], onDelete: Restrict)
 
-    property Property @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Restrict)
 
-    @@index([landlordAccountId])
-    @@index([propertyId])
-    @@index([expenseDate])
-    @@index([deletedAt])
+  @@index([landlordAccountId])
+  @@index([propertyId])
+  @@index([expenseDate])
+  @@index([deletedAt])
 }

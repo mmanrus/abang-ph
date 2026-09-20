@@ -13,9 +13,8 @@ import {
 } from "@/lib/auth/require-landlord";
 
 import {
-  prisma,
-} from "@/lib/db/prisma";
-
+  EntityPickerField,
+} from "@/components/pickers/entity-picker-field";
 import {
   getManilaToday,
 } from "@/lib/billing-date";
@@ -43,7 +42,7 @@ function dateInputValue() {
 
     String(
       date.getUTCMonth() +
-        1,
+      1,
     ).padStart(
       2,
       "0",
@@ -68,32 +67,6 @@ export default async function NewPaymentPage({
 
   const { landlord } =
     await requireLandlord();
-
-  /**
-   * Only return tenants belonging to the
-   * authenticated landlord.
-   */
-  const tenants =
-    await prisma.tenant.findMany({
-      where: {
-        landlordAccountId:
-          landlord.id,
-
-        deletedAt: null,
-
-        isActive: true,
-      },
-
-      orderBy: {
-        fullName: "asc",
-      },
-
-      select: {
-        id: true,
-        fullName: true,
-      },
-    });
-
   let selected:
     Awaited<
       ReturnType<
@@ -102,15 +75,19 @@ export default async function NewPaymentPage({
     > | null = null;
 
   if (tenantId) {
-    selected =
-      await getOutstandingChargesForTenant({
-        landlordAccountId:
-          landlord.id,
+    try {
+      selected =
+        await getOutstandingChargesForTenant({
+          landlordAccountId:
+            landlord.id,
 
-        tenantId,
-      });
+          tenantId,
+        });
+    } catch {
+      selected =
+        null;
+    }
   }
-
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
       <Link
@@ -139,43 +116,41 @@ export default async function NewPaymentPage({
           Tenant
         </h2>
 
+        <p className="mt-1 text-sm text-zinc-500">
+          Select the tenant whose outstanding rent you want to load.
+        </p>
+
         <form
           method="GET"
-          className="mt-4 flex flex-col gap-3 sm:flex-row"
+          className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end"
         >
-          <select
-            name="tenantId"
-            defaultValue={
-              tenantId ?? ""
-            }
-            required
-            className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-500"
-          >
-            <option value="">
-              Select tenant
-            </option>
+          <div className="min-w-0 flex-1">
+            <EntityPickerField
+              kind="tenant"
+              name="tenantId"
+              label="Tenant"
+              placeholder="Select tenant"
+              searchPlaceholder="Search tenant name, phone, or email..."
+              initialSelection={
+                selected
+                  ? {
+                    id:
+                      selected.tenant.id,
 
-            {tenants.map(
-              (tenant) => (
-                <option
-                  key={
-                    tenant.id
+                    title:
+                      selected.tenant.fullName,
+
+                    subtitle:
+                      "Selected tenant",
                   }
-                  value={
-                    tenant.id
-                  }
-                >
-                  {
-                    tenant.fullName
-                  }
-                </option>
-              ),
-            )}
-          </select>
+                  : null
+              }
+            />
+          </div>
 
           <button
             type="submit"
-            className="rounded-xl bg-zinc-950 px-5 py-3 text-sm font-medium text-white"
+            className="min-h-12 rounded-xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-zinc-800"
           >
             Load balance
           </button>
@@ -198,7 +173,7 @@ export default async function NewPaymentPage({
           </div>
 
           {selected.charges.length ===
-          0 ? (
+            0 ? (
             <div className="rounded-2xl border border-dashed border-zinc-300 bg-white px-6 py-14 text-center">
               <p className="font-medium text-zinc-950">
                 No outstanding rent

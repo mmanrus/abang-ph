@@ -40,7 +40,13 @@ import {
 import { getSkip, getTotalPages, PAGE_SIZE, parsePage } from "@/lib/pagination";
 import { Pagination } from "@/components/ui/pagination";
 import { DataTable, DataTableColumn } from "@/components/ui/data-table";
+import type {
+  Metadata,
+} from "next";
 
+export const metadata: Metadata = {
+  title: "Expenses",
+};
 type Props = {
     searchParams: Promise<{
         q?: string;
@@ -555,7 +561,7 @@ export default async function ExpensesPage({
                 className:
                     "text-right",
 
-                cell: (expense: any) => (
+                cell: (expense) => (
                     <span className="whitespace-nowrap font-semibold text-red-700">
                         -
                         {formatPHP(

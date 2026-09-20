@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import {
   ArrowLeft,
-  BedDouble,
   Building2,
 } from "lucide-react";
 

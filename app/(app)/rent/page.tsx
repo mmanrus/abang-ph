@@ -1,9 +1,6 @@
-import {
-  randomUUID,
-} from "node:crypto";
+
 import Link from "next/link";
 import {
-  CalendarDays,
   CircleDollarSign,
   ReceiptText,
   ChevronLeft,
@@ -21,7 +18,13 @@ import {
 import {
   Pagination,
 } from "@/components/ui/pagination";
+import type {
+  Metadata,
+} from "next";
 
+export const metadata: Metadata = {
+  title: "Rent",
+};
 import {
   PAGE_SIZE,
   getSkip,
@@ -31,7 +34,6 @@ import {
 
 import {
   getCurrentManilaPeriod,
-  getManilaToday,
 } from "@/lib/billing-date";
 
 import {
@@ -50,37 +52,14 @@ import {
 } from "@/lib/db/prisma";
 
 import {
-  centsToMoney,
   formatPHP,
   moneyToCents,
 } from "@/lib/money";
 
 import {
   generateRentChargesAction,
-  recordChargePayment,
 } from "./actions";
 import { StatusBadge } from "@/components/ui/status-badge";
-
-function defaultDateInput() {
-  const today =
-    getManilaToday();
-
-  return [
-    today.getUTCFullYear(),
-    String(
-      today.getUTCMonth() + 1,
-    ).padStart(
-      2,
-      "0",
-    ),
-    String(
-      today.getUTCDate(),
-    ).padStart(
-      2,
-      "0",
-    ),
-  ].join("-");
-}
 
 type Props = {
   searchParams: Promise<{
@@ -789,7 +768,7 @@ export default async function RentPage({
           </h2>
 
           <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-zinc-500">
-            Generate this month's
+            Generate this month&apos;s
             charges from your active
             leases.
           </p>
@@ -800,24 +779,6 @@ export default async function RentPage({
           <div className="space-y-4 lg:hidden">
             {charges.map(
               (charge) => {
-                const amount =
-                  moneyToCents(
-                    charge.amount,
-                  );
-
-                const paid =
-                  getPaidForCharge(
-                    charge,
-                  );
-
-                const balance =
-                  amount -
-                  paid;
-
-                const overdue =
-                  balance > 0n &&
-                  charge.dueDate.getTime() <
-                  getManilaToday().getTime();
 
                 return (
                   <article
@@ -898,25 +859,6 @@ function Metric({
   );
 }
 
-function SmallMetric({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div>
-      <p className="text-xs text-zinc-500">
-        {label}
-      </p>
-
-      <p className="mt-1 font-semibold text-zinc-950">
-        {value}
-      </p>
-    </div>
-  );
-}
 
 
 /**

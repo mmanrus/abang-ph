@@ -36,6 +36,7 @@ export async function updateTenantAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  void _state;
   const { landlord } =
     await requireLandlord();
 
@@ -112,6 +113,8 @@ export async function deactivateTenantAction(
   _state: ActionState,
   _formData: FormData,
 ): Promise<ActionState> {
+  void _state;
+  void _formData;
   const { landlord } =
     await requireLandlord();
 

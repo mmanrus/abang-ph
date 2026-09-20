@@ -11,6 +11,7 @@ import {
   UsersRound,
   WalletCards,
   X,
+  Settings
 } from "lucide-react";
 
 import Link from "next/link";
@@ -91,6 +92,12 @@ const secondaryNavigation = [
     href: "/reports",
     icon: BarChart3,
   },
+
+  {
+    label: "Settings",
+    href: "/settings",
+    icon: Settings,
+  },
 ] as const;
 
 const allNavigation = [
@@ -119,6 +126,9 @@ export function AppNavigation({
   ] =
     useState(false);
 
+  const displayLandlordName =
+    landlordName?.trim() ||
+    "Abang PH";
   const [
     signingOut,
     setSigningOut,
@@ -170,12 +180,7 @@ export function AppNavigation({
    *   ↓
    * drawer closes automatically
    */
-  useEffect(
-    () => {
-      setMoreOpen(false);
-    },
-    [pathname],
-  );
+
   useEffect(
     () => {
       if (!moreOpen) {
@@ -272,18 +277,26 @@ export function AppNavigation({
 
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-zinc-200 bg-white lg:flex">
         {/* BRAND */}
-        <div className="border-b border-zinc-100 px-6 py-5">
+        <div className="border-b border-zinc-100 p-4">
           <Link
             href="/dashboard"
-            className="block"
+            className="flex items-center gap-3 rounded-xl p-2 transition hover:bg-zinc-50"
           >
-            <p className="text-lg font-semibold tracking-tight text-zinc-950">
-              Abang PH
-            </p>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 font-semibold text-white">
+              {displayLandlordName
+                .charAt(0)
+                .toUpperCase()}
+            </div>
 
-            <p className="mt-0.5 truncate text-xs text-zinc-500">
-              {landlordName}
-            </p>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-zinc-950">
+                {landlordName}
+              </p>
+
+              <p className="mt-0.5 text-[11px] text-zinc-500">
+                Powered by Abang PH
+              </p>
+            </div>
           </Link>
         </div>
 
@@ -368,31 +381,26 @@ export function AppNavigation({
       {/* ============================= */}
 
       <header className="sticky top-0 z-30 border-b border-zinc-200 bg-white/95 backdrop-blur lg:hidden">
-        <div className="flex h-14 items-center justify-between px-4">
-          <Link
-            href="/dashboard"
-            className="min-w-0"
-          >
-            <p className="font-semibold tracking-tight text-zinc-950">
-              Abang PH
-            </p>
-
-            <p className="max-w-[220px] truncate text-[11px] text-zinc-500">
-              {landlordName}
-            </p>
-          </Link>
-
-          <div
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-sm font-semibold text-emerald-700"
-            title={
-              userName
-            }
-          >
-            {userName
+        <Link
+          href="/dashboard"
+          className="flex min-w-0 items-center gap-2.5"
+        >
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-sm font-semibold text-white">
+            {displayLandlordName
               .charAt(0)
               .toUpperCase()}
           </div>
-        </div>
+
+          <div className="min-w-0">
+            <p className="max-w-[190px] truncate text-sm font-semibold text-zinc-950">
+              {landlordName}
+            </p>
+
+            <p className="text-[10px] text-zinc-500">
+              Abang PH
+            </p>
+          </div>
+        </Link>
       </header>
 
       {/* ============================= */}
@@ -571,12 +579,11 @@ export function AppNavigation({
 
                     return (
                       <Link
-                        key={
-                          item.href
-                        }
-                        href={
-                          item.href
-                        }
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => {
+                          setMoreOpen(false);
+                        }}
                         aria-current={
                           active
                             ? "page"
@@ -585,17 +592,14 @@ export function AppNavigation({
                         className={[
                           "flex items-center gap-4 px-4 py-4 transition",
 
-                          index >
-                            0
+                          index > 0
                             ? "border-t border-zinc-100"
                             : "",
 
                           active
                             ? "bg-emerald-50 text-emerald-700"
                             : "text-zinc-700 hover:bg-zinc-50",
-                        ].join(
-                          " ",
-                        )}
+                        ].join(" ")}
                       >
                         <div
                           className={[
@@ -697,7 +701,8 @@ function getNavigationDescription(
 
     case "/reports":
       return "Rent and cash-flow reports";
-
+    case "/settings":
+      return "Business profile and workspace settings";
     default:
       return "";
   }

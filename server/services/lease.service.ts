@@ -64,7 +64,7 @@ export async function createActiveLease(
     input.dueDay < 1 ||
     input.dueDay > 31
   ) {
-    throw new Error(
+    throw new AppError(
       "Due day must be between 1 and 31.",
     );
   }
@@ -76,7 +76,7 @@ export async function createActiveLease(
     !Number.isFinite(monthlyRent) ||
     monthlyRent <= 0
   ) {
-    throw new Error(
+    throw new AppError(
       "Monthly rent must be greater than zero.",
     );
   }
@@ -85,7 +85,7 @@ export async function createActiveLease(
     input.securityDeposit &&
     Number(input.securityDeposit) < 0
   ) {
-    throw new Error(
+    throw new AppError(
       "Security deposit cannot be negative.",
     );
   }
@@ -94,7 +94,7 @@ export async function createActiveLease(
     input.endDate &&
     input.endDate < input.startDate
   ) {
-    throw new Error(
+    throw new AppError(
       "Lease end date cannot be before its start date.",
     );
   }
@@ -110,7 +110,7 @@ export async function createActiveLease(
   );
 
   if (input.startDate > today) {
-    throw new Error(
+    throw new AppError(
       "Future-dated leases are not supported yet.",
     );
   }
@@ -119,7 +119,7 @@ export async function createActiveLease(
     input.endDate &&
     input.endDate < today
   ) {
-    throw new Error(
+    throw new AppError(
       "A new active lease cannot already be expired.",
     );
   }
@@ -211,7 +211,7 @@ export async function createActiveLease(
         });
 
       if (!rentableSpace) {
-        throw new Error(
+        throw new AppError(
           "Rentable space not found.",
         );
       }
@@ -260,7 +260,7 @@ export async function createActiveLease(
         });
 
       if (conflictingLease) {
-        throw new Error(
+        throw new AppError(
           "This space already has an overlapping lease.",
         );
       }
@@ -355,7 +355,7 @@ export async function endActiveLease(
         });
 
       if (!lease) {
-        throw new Error(
+        throw new AppError(
           "Active lease not found.",
         );
       }

@@ -11,7 +11,13 @@ import {
 import { requireLandlord } from "@/lib/auth/require-landlord";
 import { prisma } from "@/lib/db/prisma";
 import { SuccessBanner } from "@/components/feedback/success-banner";
+import type {
+  Metadata,
+} from "next";
 
+export const metadata: Metadata = {
+  title: "Properties",
+};
 type Props = {
   searchParams: Promise<{
     q?: string;

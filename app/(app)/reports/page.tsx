@@ -9,7 +9,13 @@ import {
 import {
   formatPHP,
 } from "@/lib/money";
+import type {
+  Metadata,
+} from "next";
 
+export const metadata: Metadata = {
+  title: "Reports",
+};
 import {
   getMonthlyFinancialReport,
 } from "@/server/services/report.service";

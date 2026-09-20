@@ -5,14 +5,6 @@ import {
 } from "lucide-react";
 
 import {
-    requireLandlord,
-} from "@/lib/auth/require-landlord";
-
-import {
-    prisma,
-} from "@/lib/db/prisma";
-
-import {
     getManilaToday,
 } from "@/lib/billing-date";
 
@@ -36,30 +28,8 @@ function todayInput() {
     ].join("-");
 }
 
-export default async function NewExpensePage() {
-    const { landlord } =
-        await requireLandlord();
-
-    const properties =
-        await prisma.property.findMany({
-            where: {
-                landlordAccountId:
-                    landlord.id,
-
-                deletedAt: null,
-
-                isActive: true,
-            },
-
-            orderBy: {
-                name: "asc",
-            },
-
-            select: {
-                id: true,
-                name: true,
-            },
-        });
+export default function NewExpensePage() {
+    
 
     return (
         <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
@@ -82,9 +52,6 @@ export default async function NewExpensePage() {
                 </p>
             </div>
             <CreateExpenseForm
-                properties={
-                    properties
-                }
                 today={
                     todayInput()
                 }

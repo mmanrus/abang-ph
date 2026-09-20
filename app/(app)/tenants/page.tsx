@@ -12,7 +12,13 @@ import {
 import type {
   Prisma,
 } from "@/generated/prisma/client";
+import type {
+  Metadata,
+} from "next";
 
+export const metadata: Metadata = {
+  title: "Tenants",
+};
 import {
   DataTable,
   type DataTableColumn,

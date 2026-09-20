@@ -19,22 +19,16 @@ import {
 import {
   SubmitButton,
 } from "@/components/forms/submit-button";
-
-type PropertyOption = {
-  id: string;
-  name: string;
-};
+import {
+  EntityPickerField,
+} from "@/components/pickers/entity-picker-field";
 
 type Props = {
-  properties:
-    PropertyOption[];
-
   today:
-    string;
+  string;
 };
 
 export function CreateExpenseForm({
-  properties,
   today,
 }: Props) {
   /**
@@ -74,36 +68,13 @@ export function CreateExpenseForm({
           Property
         </label>
 
-        <select
+        <EntityPickerField
+          kind="property"
           name="propertyId"
-          required
-          defaultValue=""
-          className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
-        >
-          <option
-            value=""
-            disabled
-          >
-            Select property
-          </option>
-
-          {properties.map(
-            (property) => (
-              <option
-                key={
-                  property.id
-                }
-                value={
-                  property.id
-                }
-              >
-                {
-                  property.name
-                }
-              </option>
-            ),
-          )}
-        </select>
+          label="Property"
+          placeholder="Select property"
+          searchPlaceholder="Search name, barangay, city, province..."
+        />
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
