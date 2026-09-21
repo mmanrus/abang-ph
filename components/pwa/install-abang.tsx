@@ -1,5 +1,5 @@
 "use client";
-
+import { createPortal } from "react-dom";
 import {
   Download,
   MonitorDown,
@@ -23,18 +23,18 @@ import {
 type BeforeInstallPromptEvent =
   Event & {
     prompt:
-      () =>
-        Promise<void>;
+    () =>
+      Promise<void>;
 
     userChoice:
-      Promise<{
-        outcome:
-          | "accepted"
-          | "dismissed";
+    Promise<{
+      outcome:
+      | "accepted"
+      | "dismissed";
 
-        platform:
-          string;
-      }>;
+      platform:
+      string;
+    }>;
   };
 
 type InstallInstructions =
@@ -47,7 +47,7 @@ type Props = {
    * card    = full install card
    */
   variant?:
-    "compact" | "card";
+  "compact" | "card";
 };
 
 export function InstallAbang({
@@ -104,7 +104,7 @@ export function InstallAbang({
 
         setDeferredPrompt(
           event as
-            BeforeInstallPromptEvent,
+          BeforeInstallPromptEvent,
         );
       }
 
@@ -157,9 +157,9 @@ export function InstallAbang({
      */
     const ipadPretendingToBeMac =
       navigator.platform ===
-        "MacIntel" &&
+      "MacIntel" &&
       navigator.maxTouchPoints >
-        1;
+      1;
 
     return (
       normalIOS ||
@@ -224,20 +224,43 @@ export function InstallAbang({
   return (
     <>
       {variant ===
-      "compact" ? (
+        "compact" ? (
         <button
           type="button"
-          onClick={
-            handleInstall
-          }
-          className="pwa-install-only inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500/10"
+          onClick={handleInstall}
+          className="
+            pwa-install-only
+            inline-flex
+            h-9
+            shrink-0
+            items-center
+            justify-center
+            gap-1.5
+            rounded-lg
+            border
+            border-zinc-200
+            bg-white
+            px-2.5
+            text-xs
+            font-medium
+            text-zinc-700
+            transition
+            hover:bg-zinc-50
+            focus-visible:outline-none
+            focus-visible:ring-4
+            focus-visible:ring-emerald-500/10
+            sm:h-10
+            sm:px-3
+            sm:text-sm
+          "
         >
           <Download
-            size={17}
+            size={15}
+            className="shrink-0"
             aria-hidden="true"
           />
 
-          Install Abang PH
+          <span>Install</span>
         </button>
       ) : (
         <section className="pwa-install-only rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm sm:p-6">
@@ -292,24 +315,94 @@ export function InstallAbang({
     </>
   );
 }
-
 function InstallInstructionsModal({
   kind,
   onClose,
 }: {
   kind:
-    InstallInstructions;
+  InstallInstructions;
 
   onClose:
-    () => void;
+  () => void;
 }) {
-  return (
+  const [
+    mounted,
+    setMounted,
+  ] =
+    useState(false);
+
+  /**
+   * The portal target only exists in the browser, so we
+   * wait for mount before rendering into document.body.
+   */
+  useEffect(
+    () => {
+      setMounted(true);
+    },
+    [],
+  );
+
+  /**
+   * Escape to close, and lock background scrolling while
+   * the dialog is open.
+   */
+  useEffect(
+    () => {
+      function handleKeyDown(
+        event: KeyboardEvent,
+      ) {
+        if (
+          event.key ===
+          "Escape"
+        ) {
+          onClose();
+        }
+      }
+
+      const previousOverflow =
+        document.body.style.overflow;
+
+      document.body.style.overflow =
+        "hidden";
+
+      window.addEventListener(
+        "keydown",
+        handleKeyDown,
+      );
+
+      return () => {
+        document.body.style.overflow =
+          previousOverflow;
+
+        window.removeEventListener(
+          "keydown",
+          handleKeyDown,
+        );
+      };
+    },
+    [onClose],
+  );
+
+  if (!mounted) {
+    return null;
+  }
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40 p-4 sm:items-center"
+      className="
+        fixed
+        inset-0
+        z-[100]
+        flex
+        items-center
+        justify-center
+        overflow-y-auto
+        bg-black/50
+        p-4
+        backdrop-blur-sm
+      "
       role="presentation"
-      onMouseDown={(
-        event,
-      ) => {
+      onMouseDown={(event) => {
         if (
           event.target ===
           event.currentTarget
@@ -322,7 +415,18 @@ function InstallInstructionsModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="install-abang-title"
-        className="w-full max-w-md rounded-3xl border border-zinc-200 bg-white p-5 shadow-2xl sm:p-6"
+        className="
+          my-auto
+          w-full
+          max-w-md
+          rounded-3xl
+          border
+          border-zinc-200
+          bg-white
+          p-5
+          shadow-2xl
+          sm:p-6
+        "
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
@@ -334,9 +438,7 @@ function InstallInstructionsModal({
 
           <button
             type="button"
-            onClick={
-              onClose
-            }
+            onClick={onClose}
             aria-label="Close install instructions"
             className="flex h-11 w-11 items-center justify-center rounded-xl text-zinc-500 transition hover:bg-zinc-100"
           >
@@ -355,7 +457,7 @@ function InstallInstructionsModal({
         </h2>
 
         {kind ===
-        "ios" ? (
+          "ios" ? (
           <>
             <p className="mt-2 text-sm leading-6 text-zinc-500">
               On iPhone or iPad, install Abang from Safari:
@@ -421,15 +523,14 @@ function InstallInstructionsModal({
 
         <button
           type="button"
-          onClick={
-            onClose
-          }
+          onClick={onClose}
           className="mt-6 min-h-11 w-full rounded-xl bg-zinc-950 px-4 text-sm font-medium text-white transition hover:bg-zinc-800"
         >
           Got it
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -439,13 +540,13 @@ function InstructionStep({
   children,
 }: {
   number:
-    number;
+  number;
 
   icon?:
-    React.ReactNode;
+  React.ReactNode;
 
   children:
-    React.ReactNode;
+  React.ReactNode;
 }) {
   return (
     <li className="flex gap-3">

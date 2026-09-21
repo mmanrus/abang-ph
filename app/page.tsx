@@ -4,6 +4,10 @@ import {
 } from "@/components/pwa/install-abang";
 
 import {
+  PublicNavigation,
+} from "@/components/landing/public-navigation";
+
+import {
   ArrowRight,
   BarChart3,
   Building2,
@@ -61,12 +65,12 @@ export default async function HomePage() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link
             href="/"
-            className="flex items-center gap-3"
+            className="flex min-w-0 items-center gap-2 sm:gap-3"
           >
             <BrandMark />
 
             <div>
-              <p className="font-semibold tracking-tight text-zinc-950">
+              <p className="whitespace-nowrap text-sm font-semibold tracking-tight text-zinc-950 sm:text-base">
                 Abang PH
               </p>
 
@@ -76,48 +80,9 @@ export default async function HomePage() {
             </div>
           </Link>
 
-          <nav
-            aria-label="Public navigation"
-            className="flex items-center gap-2"
-          >
-            {signedIn ? (
-              <Link
-                href="/dashboard"
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-medium text-white transition hover:bg-emerald-700"
-              >
-                Back to dashboard
-
-                <ArrowRight
-                  size={16}
-                  aria-hidden="true"
-                />
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="inline-flex min-h-10 items-center justify-center rounded-xl px-3 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-950 sm:px-4"
-                >
-                  Sign in
-                </Link>
-
-                <Link
-                  href="/register"
-                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-medium text-white transition hover:bg-emerald-700"
-                >
-                  Get started
-
-                  <ArrowRight
-                    size={16}
-                    aria-hidden="true"
-                  />
-                </Link>
-                <InstallAbang
-                  variant="compact"
-                />
-              </>
-            )}
-          </nav>
+          <PublicNavigation
+            signedIn={signedIn}
+          />
         </div>
       </header>
 
