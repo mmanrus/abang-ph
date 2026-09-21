@@ -37,7 +37,7 @@ export function LoginForm() {
 
       router.push("/dashboard");
       router.refresh();
-    } catch (error) {
+    } catch (_) {
 
       setError(
         "Something went wrong while signing in.",
