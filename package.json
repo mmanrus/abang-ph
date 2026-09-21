@@ -11,6 +11,9 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:migrate:status": "prisma migrate status",
+    "db:migrations:check": "node scripts/check-migrations.mjs",
     "icons:generate": "node scripts/generate-pwa-icons.mjs"
   },
   "dependencies": {
