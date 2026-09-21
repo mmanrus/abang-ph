@@ -30,26 +30,25 @@ import {
  *   unhealthy
  */
 
+import {
+  logger,
+} from "@/lib/logger";
+
 export async function GET() {
   try {
     await prisma.$queryRaw`
       SELECT 1
     `;
 
-    return NextResponse.json(
-      {
-        status:
-          "ok",
-      },
-
-      {
-        status: 200,
-      },
-    );
-  } catch (error) {
-    console.error(
-      "Health check failed:",
-      error,
+    return NextResponse.json({
+      status:
+        "ok",
+    });
+  }
+  catch {
+    logger.error(
+      "health_check_failed",
+      "Database health check failed",
     );
 
     return NextResponse.json(
@@ -57,9 +56,9 @@ export async function GET() {
         status:
           "unhealthy",
       },
-
       {
-        status: 503,
+        status:
+          503,
       },
     );
   }

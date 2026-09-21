@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import {
   AlertTriangle,
   RotateCcw,
@@ -33,9 +34,7 @@ export default function AppError({
        * OpenTelemetry
        * another monitoring service
        */
-      console.error(
-        error,
-      );
+      logger.error("app_error", `App Error: ${error}`);
     },
     [error],
   );

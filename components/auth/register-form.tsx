@@ -62,7 +62,6 @@ export function RegisterForm() {
       router.push("/onboarding");
       router.refresh();
     } catch (error) {
-      console.error(error);
 
       setError(
         "Something went wrong while creating your account.",

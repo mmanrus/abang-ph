@@ -1,3 +1,5 @@
+import { logger } from "./logger";
+
 /**
  * AppError
  * --------
@@ -53,9 +55,23 @@ export function getUserSafeErrorMessage(
     return error.message;
   }
 
-  console.error(
-    "Unexpected application error:",
-    error,
+  logger.error(
+    "unexpected_application_error",
+    "An unexpected application error occurred.",
+    {
+      /**
+       * Recording only the error TYPE gives us some diagnostic
+       * information without persisting its potentially sensitive
+       * message or complete stack trace.
+       *
+       * Detailed controlled error capture will be handled later
+       * by our error-monitoring layer.
+       */
+      errorType:
+        error instanceof Error
+          ? error.name
+          : typeof error,
+    },
   );
 
   return "Something went wrong. Please try again.";
