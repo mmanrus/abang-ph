@@ -1,6 +1,5 @@
 "use client";
 
-import { logger } from "@/lib/logger";
 import {
   AlertTriangle,
   RotateCcw,
@@ -16,8 +15,7 @@ export default function AppError({
 }: {
   error:
     Error & {
-      digest?:
-        string;
+      digest?: string;
     };
 
   reset:
@@ -26,15 +24,29 @@ export default function AppError({
   useEffect(
     () => {
       /**
-       * Developers still need the full technical error.
+       * This error boundary runs in the browser.
        *
-       * In production this could later go to:
+       * SECURITY:
        *
-       * Sentry
-       * OpenTelemetry
-       * another monitoring service
+       * Do not send the raw Error object to our server logger here.
+       * Client errors may contain implementation details or values
+       * that we do not want persisted in production logs.
+       *
+       * During local development, however, printing the complete
+       * error to the browser console is useful for debugging.
+       *
+       * Later, a dedicated error-monitoring service can capture
+       * browser errors safely and intentionally.
        */
-      logger.error("app_error", `App Error: ${error}`);
+      if (
+        process.env.NODE_ENV !==
+        "production"
+      ) {
+        console.error(
+          "App error:",
+          error,
+        );
+      }
     },
     [error],
   );
@@ -45,6 +57,7 @@ export default function AppError({
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-600">
           <AlertTriangle
             size={22}
+            aria-hidden="true"
           />
         </div>
 
@@ -54,7 +67,7 @@ export default function AppError({
 
         <p className="mt-2 text-sm leading-6 text-zinc-500">
           Abang couldn&apos;t complete this request.
-          Your existing data has not been intentionally removed.
+          Please try again.
         </p>
 
         <button
@@ -66,6 +79,7 @@ export default function AppError({
         >
           <RotateCcw
             size={16}
+            aria-hidden="true"
           />
 
           Try again
