@@ -62,6 +62,16 @@ export type Account = Prisma.AccountModel
  */
 export type Verification = Prisma.VerificationModel
 /**
+ * Model RateLimit
+ * *
+ *  * Better Auth rate-limit state.
+ *  * We store this in PostgreSQL instead of process memory because
+ *  * production runs on Vercel, where requests may execute on
+ *  * different server instances.
+ *  * All instances therefore share the same rate-limit counters.
+ */
+export type RateLimit = Prisma.RateLimitModel
+/**
  * Model LandlordAccount
  * 
  */

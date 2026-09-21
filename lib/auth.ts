@@ -34,4 +34,24 @@ export const auth =
     emailAndPassword: {
       enabled: true,
     },
+    rateLimit: {
+      /**
+       * Enable Better Auth's built-in request rate limiter
+       * explicitly instead of relying on production defaults.
+       */
+      enabled: true,
+
+      /**
+       * IMPORTANT:
+       *
+       * Vercel can execute requests on multiple server instances.
+       * An in-memory rate limiter would give each instance its
+       * own counter.
+       *
+       * Database storage keeps the counters in PostgreSQL so
+       * all instances share the same rate-limit state.
+       */
+      storage:
+        "database",
+    },
   });

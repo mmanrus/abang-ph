@@ -99,7 +99,6 @@ model User {
 // BETTER AUTH
 // ============================================================
 
-
 model Session {
   id        String   @id
   expiresAt DateTime
@@ -148,6 +147,22 @@ model Verification {
   @@map("verification")
 }
 
+/**
+ * Better Auth rate-limit state.
+ * We store this in PostgreSQL instead of process memory because
+ * production runs on Vercel, where requests may execute on
+ * different server instances.
+ * All instances therefore share the same rate-limit counters.
+ */
+model RateLimit {
+  id          String @id
+  key         String
+  count       Int
+  lastRequest BigInt
+
+  @@unique([key])
+  @@map("rateLimit")
+}
 
 // ============================================================
 // LANDLORD ACCOUNT
