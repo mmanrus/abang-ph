@@ -12,10 +12,6 @@ import {
 } from "@/lib/errors";
 
 import {
-  requireLandlord,
-} from "@/lib/auth/require-landlord";
-
-import {
   archiveProperty,
   archiveRentableSpace,
   archiveUnit,
@@ -23,6 +19,7 @@ import {
   updateRentableSpace,
   updateUnit,
 } from "@/server/services/property.service";
+import { requireWritableLandlord } from "@/lib/auth/require-writable-landlord";
 
 function optional(
   formData: FormData,
@@ -43,7 +40,7 @@ export async function updatePropertyAction(
 ): Promise<ActionState> {
   void _state;
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   try {
     await updateProperty({
@@ -139,7 +136,7 @@ export async function archivePropertyAction(
   void _formData;
 
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   try {
     await archiveProperty({
@@ -175,7 +172,7 @@ export async function updateUnitAction(
   formData: FormData,
 ): Promise<ActionState> {
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   try {
     await updateUnit({
@@ -234,7 +231,7 @@ export async function archiveUnitAction(
   void _formData;
 
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
   /**
    * BUSINESS INVARIANT
    * ------------------
@@ -302,7 +299,7 @@ export async function updateSpaceAction(
   void _state;
 
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   try {
     await updateRentableSpace({
@@ -359,7 +356,7 @@ export async function archiveSpaceAction(
   void _state;
   void _formData;
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   try {
     await archiveRentableSpace({

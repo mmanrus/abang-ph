@@ -24,6 +24,7 @@ import {
 import {
   AppError,
 } from "@/lib/errors";
+import { requireWritableLandlord } from "@/lib/auth/require-writable-landlord";
 
 export async function voidPaymentAction(
   paymentId: string,
@@ -38,7 +39,7 @@ export async function voidPaymentAction(
    * We do NOT receive landlordAccountId from the form.
    */
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   const reason =
     String(
@@ -126,7 +127,7 @@ export async function recordMultiChargePayment(
    * The session is the trusted source.
    */
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   const tenantId =
     String(

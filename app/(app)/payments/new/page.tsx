@@ -28,6 +28,7 @@ import {
 } from "@/components/payments/multi-charge-payment-form";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { secondaryButtonClass } from "@/lib/ui-classes";
+import { requireWritableLandlord } from "@/lib/auth/require-writable-landlord";
 
 type Props = {
   searchParams: Promise<{
@@ -68,7 +69,7 @@ export default async function NewPaymentPage({
     await searchParams;
 
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
   let selected:
     Awaited<
       ReturnType<

@@ -23,6 +23,7 @@ import {
 import {
   updateBusinessProfile,
 } from "@/server/services/settings.service";
+import { requireWritableLandlord } from "@/lib/auth/require-writable-landlord";
 
 export async function updateBusinessProfileAction(
   _previousState:
@@ -42,7 +43,7 @@ export async function updateBusinessProfileAction(
   const {
     landlord,
   } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   try {
     await updateBusinessProfile({

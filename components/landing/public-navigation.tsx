@@ -16,6 +16,7 @@ import {
 import {
     InstallAbang,
 } from "@/components/pwa/install-abang";
+import { DemoLoginButton } from "../demo/demo-login-button";
 
 type Props = {
     signedIn: boolean;
@@ -193,7 +194,7 @@ export function PublicNavigation({
                                 aria-hidden="true"
                             />
                         </Link>
-
+                        <DemoLoginButton />
                         <InstallAbang
                             variant="compact"
                         />
@@ -352,7 +353,7 @@ export function PublicNavigation({
                                     className="shrink-0"
                                 />
                             </Link>
-
+                            <DemoLoginButton />
                             <div
                                 className="
                         [&_button]:h-11

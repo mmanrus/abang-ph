@@ -121,3 +121,13 @@ export type PaymentAllocation = Prisma.PaymentAllocationModel
  * 
  */
 export type Expense = Prisma.ExpenseModel
+/**
+ * Model Feedback
+ * 
+ */
+export type Feedback = Prisma.FeedbackModel
+/**
+ * Model FeedbackReply
+ * 
+ */
+export type FeedbackReply = Prisma.FeedbackReplyModel

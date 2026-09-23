@@ -84,3 +84,30 @@ export const ExpenseCategory = {
 } as const
 
 export type ExpenseCategory = (typeof ExpenseCategory)[keyof typeof ExpenseCategory]
+
+
+export const FeedbackType = {
+  BUG: 'BUG',
+  FEATURE: 'FEATURE',
+  SUPPORT: 'SUPPORT'
+} as const
+
+export type FeedbackType = (typeof FeedbackType)[keyof typeof FeedbackType]
+
+
+export const FeedbackStatus = {
+  OPEN: 'OPEN',
+  REVIEWING: 'REVIEWING',
+  RESOLVED: 'RESOLVED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type FeedbackStatus = (typeof FeedbackStatus)[keyof typeof FeedbackStatus]
+
+
+export const FeedbackReplyAuthor = {
+  ADMIN: 'ADMIN',
+  LANDLORD: 'LANDLORD'
+} as const
+
+export type FeedbackReplyAuthor = (typeof FeedbackReplyAuthor)[keyof typeof FeedbackReplyAuthor]

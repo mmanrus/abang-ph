@@ -31,6 +31,7 @@ export type LandlordAccountMinAggregateOutputType = {
   phone: string | null
   timezone: string | null
   currency: string | null
+  isDemo: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -43,6 +44,7 @@ export type LandlordAccountMaxAggregateOutputType = {
   phone: string | null
   timezone: string | null
   currency: string | null
+  isDemo: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -55,6 +57,7 @@ export type LandlordAccountCountAggregateOutputType = {
   phone: number
   timezone: number
   currency: number
+  isDemo: number
   createdAt: number
   updatedAt: number
   deletedAt: number
@@ -69,6 +72,7 @@ export type LandlordAccountMinAggregateInputType = {
   phone?: true
   timezone?: true
   currency?: true
+  isDemo?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -81,6 +85,7 @@ export type LandlordAccountMaxAggregateInputType = {
   phone?: true
   timezone?: true
   currency?: true
+  isDemo?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -93,6 +98,7 @@ export type LandlordAccountCountAggregateInputType = {
   phone?: true
   timezone?: true
   currency?: true
+  isDemo?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -178,6 +184,7 @@ export type LandlordAccountGroupByOutputType = {
   phone: string | null
   timezone: string
   currency: string
+  isDemo: boolean
   createdAt: Date
   updatedAt: Date
   deletedAt: Date | null
@@ -211,6 +218,7 @@ export type LandlordAccountWhereInput = {
   phone?: Prisma.StringNullableFilter<"LandlordAccount"> | string | null
   timezone?: Prisma.StringFilter<"LandlordAccount"> | string
   currency?: Prisma.StringFilter<"LandlordAccount"> | string
+  isDemo?: Prisma.BoolFilter<"LandlordAccount"> | boolean
   createdAt?: Prisma.DateTimeFilter<"LandlordAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LandlordAccount"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"LandlordAccount"> | Date | string | null
@@ -228,6 +236,7 @@ export type LandlordAccountOrderByWithRelationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   timezone?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  isDemo?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -248,6 +257,7 @@ export type LandlordAccountWhereUniqueInput = Prisma.AtLeast<{
   phone?: Prisma.StringNullableFilter<"LandlordAccount"> | string | null
   timezone?: Prisma.StringFilter<"LandlordAccount"> | string
   currency?: Prisma.StringFilter<"LandlordAccount"> | string
+  isDemo?: Prisma.BoolFilter<"LandlordAccount"> | boolean
   createdAt?: Prisma.DateTimeFilter<"LandlordAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LandlordAccount"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"LandlordAccount"> | Date | string | null
@@ -265,6 +275,7 @@ export type LandlordAccountOrderByWithAggregationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   timezone?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  isDemo?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -283,6 +294,7 @@ export type LandlordAccountScalarWhereWithAggregatesInput = {
   phone?: Prisma.StringNullableWithAggregatesFilter<"LandlordAccount"> | string | null
   timezone?: Prisma.StringWithAggregatesFilter<"LandlordAccount"> | string
   currency?: Prisma.StringWithAggregatesFilter<"LandlordAccount"> | string
+  isDemo?: Prisma.BoolWithAggregatesFilter<"LandlordAccount"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"LandlordAccount"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"LandlordAccount"> | Date | string
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LandlordAccount"> | Date | string | null
@@ -294,6 +306,7 @@ export type LandlordAccountCreateInput = {
   phone?: string | null
   timezone?: string
   currency?: string
+  isDemo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -311,6 +324,7 @@ export type LandlordAccountUncheckedCreateInput = {
   phone?: string | null
   timezone?: string
   currency?: string
+  isDemo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -326,6 +340,7 @@ export type LandlordAccountUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -343,6 +358,7 @@ export type LandlordAccountUncheckedUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -359,6 +375,7 @@ export type LandlordAccountCreateManyInput = {
   phone?: string | null
   timezone?: string
   currency?: string
+  isDemo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -370,6 +387,7 @@ export type LandlordAccountUpdateManyMutationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -382,6 +400,7 @@ export type LandlordAccountUncheckedUpdateManyInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -399,6 +418,7 @@ export type LandlordAccountCountOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  isDemo?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -411,6 +431,7 @@ export type LandlordAccountMaxOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  isDemo?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -423,6 +444,7 @@ export type LandlordAccountMinOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  isDemo?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -527,6 +549,7 @@ export type LandlordAccountCreateWithoutUserInput = {
   phone?: string | null
   timezone?: string
   currency?: string
+  isDemo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -542,6 +565,7 @@ export type LandlordAccountUncheckedCreateWithoutUserInput = {
   phone?: string | null
   timezone?: string
   currency?: string
+  isDemo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -573,6 +597,7 @@ export type LandlordAccountUpdateWithoutUserInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -588,6 +613,7 @@ export type LandlordAccountUncheckedUpdateWithoutUserInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -603,6 +629,7 @@ export type LandlordAccountCreateWithoutPropertiesInput = {
   phone?: string | null
   timezone?: string
   currency?: string
+  isDemo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -619,6 +646,7 @@ export type LandlordAccountUncheckedCreateWithoutPropertiesInput = {
   phone?: string | null
   timezone?: string
   currency?: string
+  isDemo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -649,6 +677,7 @@ export type LandlordAccountUpdateWithoutPropertiesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -665,6 +694,7 @@ export type LandlordAccountUncheckedUpdateWithoutPropertiesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -679,6 +709,7 @@ export type LandlordAccountCreateWithoutTenantsInput = {
   phone?: string | null
   timezone?: string
   currency?: string
+  isDemo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -695,6 +726,7 @@ export type LandlordAccountUncheckedCreateWithoutTenantsInput = {
   phone?: string | null
   timezone?: string
   currency?: string
+  isDemo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -725,6 +757,7 @@ export type LandlordAccountUpdateWithoutTenantsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -741,6 +774,7 @@ export type LandlordAccountUncheckedUpdateWithoutTenantsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -755,6 +789,7 @@ export type LandlordAccountCreateWithoutPaymentsInput = {
   phone?: string | null
   timezone?: string
   currency?: string
+  isDemo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -771,6 +806,7 @@ export type LandlordAccountUncheckedCreateWithoutPaymentsInput = {
   phone?: string | null
   timezone?: string
   currency?: string
+  isDemo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -801,6 +837,7 @@ export type LandlordAccountUpdateWithoutPaymentsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -817,6 +854,7 @@ export type LandlordAccountUncheckedUpdateWithoutPaymentsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -831,6 +869,7 @@ export type LandlordAccountCreateWithoutExpensesInput = {
   phone?: string | null
   timezone?: string
   currency?: string
+  isDemo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -847,6 +886,7 @@ export type LandlordAccountUncheckedCreateWithoutExpensesInput = {
   phone?: string | null
   timezone?: string
   currency?: string
+  isDemo?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -877,6 +917,7 @@ export type LandlordAccountUpdateWithoutExpensesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -893,6 +934,7 @@ export type LandlordAccountUncheckedUpdateWithoutExpensesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -966,6 +1008,7 @@ export type LandlordAccountSelect<ExtArgs extends runtime.Types.Extensions.Inter
   phone?: boolean
   timezone?: boolean
   currency?: boolean
+  isDemo?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -984,6 +1027,7 @@ export type LandlordAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   phone?: boolean
   timezone?: boolean
   currency?: boolean
+  isDemo?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -997,6 +1041,7 @@ export type LandlordAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   phone?: boolean
   timezone?: boolean
   currency?: boolean
+  isDemo?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -1010,12 +1055,13 @@ export type LandlordAccountSelectScalar = {
   phone?: boolean
   timezone?: boolean
   currency?: boolean
+  isDemo?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
 }
 
-export type LandlordAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "displayName" | "phone" | "timezone" | "currency" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["landlordAccount"]>
+export type LandlordAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "displayName" | "phone" | "timezone" | "currency" | "isDemo" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["landlordAccount"]>
 export type LandlordAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   properties?: boolean | Prisma.LandlordAccount$propertiesArgs<ExtArgs>
@@ -1047,6 +1093,7 @@ export type $LandlordAccountPayload<ExtArgs extends runtime.Types.Extensions.Int
     phone: string | null
     timezone: string
     currency: string
+    isDemo: boolean
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -1484,6 +1531,7 @@ export interface LandlordAccountFieldRefs {
   readonly phone: Prisma.FieldRef<"LandlordAccount", 'String'>
   readonly timezone: Prisma.FieldRef<"LandlordAccount", 'String'>
   readonly currency: Prisma.FieldRef<"LandlordAccount", 'String'>
+  readonly isDemo: Prisma.FieldRef<"LandlordAccount", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"LandlordAccount", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"LandlordAccount", 'DateTime'>
   readonly deletedAt: Prisma.FieldRef<"LandlordAccount", 'DateTime'>

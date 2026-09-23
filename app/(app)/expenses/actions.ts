@@ -24,6 +24,7 @@ import {
 import {
   redirect,
 } from "next/navigation";
+import { requireWritableLandlord } from "@/lib/auth/require-writable-landlord";
 
 const expenseCategories = {
   MAINTENANCE:
@@ -97,7 +98,7 @@ export async function createExpenseAction(
   const {
     landlord,
   } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   try {
     const propertyId =
