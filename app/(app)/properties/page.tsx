@@ -14,6 +14,7 @@ import { SuccessBanner } from "@/components/feedback/success-banner";
 import type {
   Metadata,
 } from "next";
+import { SearchButton } from "@/components/forms/search-button";
 
 export const metadata: Metadata = {
   title: "Properties",
@@ -171,12 +172,11 @@ export default async function PropertiesPage({
             />
           </div>
 
-          <button
-            type="submit"
+          <SearchButton
             className="rounded-xl border border-zinc-200 bg-white px-5 py-3 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
           >
             Search
-          </button>
+          </SearchButton>
 
           {q && (
             <Link

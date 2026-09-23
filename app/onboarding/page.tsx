@@ -3,6 +3,7 @@ import { completeOnboarding } from "./actions";
 import { prisma } from "@/lib/db/prisma";
 import { requireUser } from "@/lib/auth/require-user";
 import { redirect } from "next/navigation";
+import { SubmitButton } from "@/components/forms/submit-button";
 
 export default async function OnboardingPage() {
   const user = await requireUser();
@@ -186,13 +187,16 @@ export default async function OnboardingPage() {
               </div>
             </div>
           </section>
-
-          <button
-            type="submit"
-            className="w-full rounded-xl bg-zinc-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-zinc-800"
+          <SubmitButton
+            pendingText="Finishing setup..."
+            className="
+              w-full rounded-xl bg-zinc-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-zinc-800
+              disabled:cursor-not-allowed
+              disabled:opacity-60
+            "
           >
             Finish setup
-          </button>
+          </SubmitButton>
         </form>
       </div>
     </main>
