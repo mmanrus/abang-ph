@@ -108,15 +108,16 @@ export default async function HomePage() {
               payments, and expenses from one simple
               workspace.
             </p>
-            <p className="mt-2 text-sm text-zinc-400">
-              Questions or feedback?{" "}
+            <p className="mt-3 text-sm text-zinc-500">
+              Interested in using Abang for your rental business?{" "}
               <a
-                href="mailto:mmanrusiana@gmail.com"
-                className="font-medium text-zinc-600 transition hover:text-emerald-700"
+                href="mailto:mmanrusiana@gmail.com?subject=Interested%20in%20Abang%20PH"
+                className="font-medium text-emerald-700 transition hover:text-emerald-800"
               >
-                mmanrusiana@gmail.com
+                Let&apos;s talk.
               </a>
             </p>
+
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               {signedIn ? (
                 <Link
@@ -412,34 +413,70 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
       {/* ================================================== */}
-      {/* FINAL CTA                                          */}
+      {/* SALES / NEGOTIATION CTA                            */}
       {/* ================================================== */}
 
       <section>
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
           <div className="overflow-hidden rounded-3xl bg-emerald-600 px-6 py-12 text-center text-white sm:px-10 sm:py-16">
-            <h2 className="mx-auto max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
-              Spend less time tracking rent and more time running your property.
-            </h2>
-
-            <p className="mx-auto mt-4 max-w-xl leading-7 text-emerald-50">
-              Start organizing your properties, tenants,
-              rent, payments, and expenses with Abang PH.
+            <p className="text-sm font-medium text-emerald-100">
+              Interested in using Abang PH?
             </p>
 
-            <Link
-              href="/register"
-              className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-white px-6 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/30"
-            >
-              Get started
+            <h2 className="mx-auto mt-3 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
+              Let&apos;s talk about what works for your rental business.
+            </h2>
 
-              <ArrowRight
-                size={17}
-                aria-hidden="true"
-              />
-            </Link>
+            <p className="mx-auto mt-4 max-w-2xl leading-7 text-emerald-50">
+              Whether you manage a small boarding house, apartment,
+              dormitory, or several rental properties, I&apos;d be happy
+              to discuss your setup, pricing, and what you need from
+              Abang PH.
+            </p>
+
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <a
+                href={`mailto:mmanrusiana@gmail.com?subject=${encodeURIComponent(
+                  "Interested in Abang PH",
+                )}&body=${encodeURIComponent(
+                  `Hi Emmanuel,
+
+I'm interested in Abang PH for my rental business.
+
+Property type:
+Number of rentable spaces:
+Current way I track rent:
+
+I'd like to know more about pricing and how Abang PH could work for me.`,
+                )}`}
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-white px-6 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/30 sm:w-auto"
+              >
+                <Mail
+                  size={17}
+                  aria-hidden="true"
+                />
+
+                Talk about pricing
+              </a>
+
+              <Link
+                href="/register"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-white/30 px-6 text-sm font-medium text-white transition hover:bg-white/10 sm:w-auto"
+              >
+                Try Abang PH
+
+                <ArrowRight
+                  size={17}
+                  aria-hidden="true"
+                />
+              </Link>
+            </div>
+
+            <p className="mt-5 text-xs leading-5 text-emerald-100">
+              Early users can also contact me about pilot pricing,
+              onboarding, or larger property setups.
+            </p>
           </div>
         </div>
       </section>
@@ -476,7 +513,19 @@ export default async function HomePage() {
                 aria-hidden="true"
               />
             </Link>
+            <Link
+              href="/privacy"
+              className="inline-flex items-center justify-center text-sm font-medium leading-none text-zinc-600 hover:text-zinc-950"
+            >
+              Privacy
+            </Link>
 
+            <Link
+              href="/terms"
+              className="inline-flex items-center justify-center npm run builkdtext-sm font-medium leading-none text-zinc-600 hover:text-zinc-950"
+            >
+              Terms
+            </Link>
             <a
               href="mailto:mmanrusiana@gmail.com"
               className="inline-flex items-center justify-center gap-2 text-sm font-medium leading-none text-zinc-600 transition hover:text-zinc-950"
@@ -491,26 +540,40 @@ export default async function HomePage() {
             </a>
           </>
           ) : (
-            <div className="flex gap-5 text-sm text-zinc-500">
+            <div className="flex flex-wrap justify-center gap-x-5 gap-y-3 text-sm text-zinc-500">
               <Link
                 href="/login"
-                className="hover:text-zinc-950"
+                className="transition hover:text-zinc-950"
               >
                 Sign in
               </Link>
 
               <Link
                 href="/register"
-                className="hover:text-zinc-950"
+                className="transition hover:text-zinc-950"
               >
                 Register
+              </Link>
+
+              <Link
+                href="/privacy"
+                className="transition hover:text-zinc-950"
+              >
+                Privacy
+              </Link>
+
+              <Link
+                href="/terms"
+                className="transition hover:text-zinc-950"
+              >
+                Terms
               </Link>
 
               <a
                 href="mailto:mmanrusiana@gmail.com"
                 className="transition hover:text-zinc-950"
               >
-                Contact Developer
+                Contact
               </a>
             </div>
           )}
