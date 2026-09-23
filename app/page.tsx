@@ -117,7 +117,7 @@ export default async function HomePage() {
                 mmanrusiana@gmail.com
               </a>
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               {signedIn ? (
                 <Link
                   href="/dashboard"
