@@ -84,7 +84,7 @@ export function SearchButton({
         />
       )}
 
-      <span className="hidden sm:inline">
+      <span className={searchIcon ? "hidden sm:inline" : "inline"}>
         {pending
           ? pendingText
           : children}
