@@ -65,7 +65,9 @@ export const ModelName = {
   RentCharge: 'RentCharge',
   Payment: 'Payment',
   PaymentAllocation: 'PaymentAllocation',
-  Expense: 'Expense'
+  Expense: 'Expense',
+  Feedback: 'Feedback',
+  FeedbackReply: 'FeedbackReply'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -161,6 +163,7 @@ export const LandlordAccountScalarFieldEnum = {
   phone: 'phone',
   timezone: 'timezone',
   currency: 'currency',
+  isDemo: 'isDemo',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
@@ -318,6 +321,33 @@ export const ExpenseScalarFieldEnum = {
 } as const
 
 export type ExpenseScalarFieldEnum = (typeof ExpenseScalarFieldEnum)[keyof typeof ExpenseScalarFieldEnum]
+
+
+export const FeedbackScalarFieldEnum = {
+  id: 'id',
+  landlordAccountId: 'landlordAccountId',
+  userId: 'userId',
+  type: 'type',
+  subject: 'subject',
+  message: 'message',
+  page: 'page',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FeedbackScalarFieldEnum = (typeof FeedbackScalarFieldEnum)[keyof typeof FeedbackScalarFieldEnum]
+
+
+export const FeedbackReplyScalarFieldEnum = {
+  id: 'id',
+  feedbackId: 'feedbackId',
+  authorType: 'authorType',
+  message: 'message',
+  createdAt: 'createdAt'
+} as const
+
+export type FeedbackReplyScalarFieldEnum = (typeof FeedbackReplyScalarFieldEnum)[keyof typeof FeedbackReplyScalarFieldEnum]
 
 
 export const SortOrder = {

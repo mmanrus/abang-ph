@@ -11,7 +11,8 @@ import {
   UsersRound,
   WalletCards,
   X,
-  Settings
+  Settings,
+  MessageCircle
 } from "lucide-react";
 
 import Link from "next/link";
@@ -98,6 +99,11 @@ const secondaryNavigation = [
     href: "/settings",
     icon: Settings,
   },
+  {
+    href: "/help",
+    label: "Help & Feedback",
+    icon: MessageCircle,
+  }
 ] as const;
 
 const allNavigation = [
@@ -382,26 +388,26 @@ export function AppNavigation({
 
       <header className="sticky top-0 z-30 border-b border-zinc-200 bg-white/95 pt-[env(safe-area-inset-top)] backdrop-blur lg:hidden">
         <div className="flex min-h-14 items-center px-4">
-        <Link
-          href="/dashboard"
-          className="flex min-w-0 items-center gap-2.5"
-        >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-sm font-semibold text-white">
-            {displayLandlordName
-              .charAt(0)
-              .toUpperCase()}
-          </div>
+          <Link
+            href="/dashboard"
+            className="flex min-w-0 items-center gap-2.5"
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-sm font-semibold text-white">
+              {displayLandlordName
+                .charAt(0)
+                .toUpperCase()}
+            </div>
 
-          <div className="min-w-0">
-            <p className="max-w-[190px] truncate text-sm font-semibold text-zinc-950">
-              {landlordName}
-            </p>
+            <div className="min-w-0">
+              <p className="max-w-[190px] truncate text-sm font-semibold text-zinc-950">
+                {landlordName}
+              </p>
 
-            <p className="text-[10px] text-zinc-500">
-              Abang PH
-            </p>
-          </div>
-        </Link>
+              <p className="text-[10px] text-zinc-500">
+                Abang PH
+              </p>
+            </div>
+          </Link>
         </div>
       </header>
 

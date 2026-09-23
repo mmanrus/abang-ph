@@ -1,6 +1,7 @@
 import {
   AppNavigation,
 } from "@/components/app/app-navigation";
+import { DemoModeBanner } from "@/components/demo/demo-mode-banner";
 
 import {
   requireLandlord,
@@ -10,7 +11,7 @@ export default async function AppLayout({
   children,
 }: {
   children:
-    React.ReactNode;
+  React.ReactNode;
 }) {
   /**
    * AUTHENTICATION AT THE LAYOUT
@@ -33,7 +34,11 @@ export default async function AppLayout({
     landlord,
   } =
     await requireLandlord();
-
+  {
+    landlord.isDemo && (
+      <DemoModeBanner />
+    )
+  }
   return (
     <div className="min-h-screen bg-zinc-50">
       <AppNavigation

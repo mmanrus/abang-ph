@@ -1,6 +1,7 @@
 "use server";
 
-import { requireLandlord } from "@/lib/auth/require-landlord";
+
+import { requireWritableLandlord } from "@/lib/auth/require-writable-landlord";
 import { prisma } from "@/lib/db/prisma";
 import { AppError } from "@/lib/errors";
 
@@ -20,7 +21,7 @@ const propertyTypes = {
 export async function createProperty(
   formData: FormData,
 ) {
-  const { landlord } = await requireLandlord();
+  const { landlord } = await requireWritableLandlord();
 
   const name = String(
     formData.get("name") ?? "",
@@ -87,7 +88,7 @@ export async function createUnit(
   formData: FormData,
 ) {
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   const name = String(
     formData.get("name") ?? "",
@@ -141,7 +142,7 @@ export async function createRentableSpace(
   formData: FormData,
 ) {
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   const name = String(
     formData.get("name") ?? "",

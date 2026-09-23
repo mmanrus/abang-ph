@@ -48,6 +48,8 @@ export const FLASH_MESSAGES = {
     "Payment voided. Rent balances and collection totals were recalculated.",
   "settings-updated":
     "Business profile updated successfully.",
+  "feedback_sent":
+    "Thanks! Your feedback has been sent.",
 } as const;
 
 export type FlashMessageCode =

@@ -3,6 +3,7 @@
 import {
   requireLandlord,
 } from "@/lib/auth/require-landlord";
+import { requireWritableLandlord } from "@/lib/auth/require-writable-landlord";
 
 import {
   prisma,
@@ -63,7 +64,7 @@ export async function generateRentChargesAction(
    * That's intentional.
    */
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   const year =
     Number(
@@ -125,7 +126,7 @@ export async function recordChargePayment(
   formData: FormData,
 ) {
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   const charge =
     await prisma.rentCharge.findFirst({

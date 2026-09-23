@@ -15,6 +15,7 @@ import {
 import {
   redirect,
 } from "next/navigation";
+import { requireWritableLandlord } from "@/lib/auth/require-writable-landlord";
 
 function readOptionalString(
   formData: FormData,
@@ -51,7 +52,7 @@ export async function createTenant(
   formData: FormData,
 ) {
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   const fullName = String(
     formData.get("fullName") ?? "",
@@ -115,7 +116,7 @@ export async function createLeaseAction(
   formData: FormData,
 ) {
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   const rentableSpaceId =
     String(
@@ -226,7 +227,7 @@ export async function endLeaseAction(
   leaseId: string,
 ) {
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   await endActiveLease({
     landlordAccountId:

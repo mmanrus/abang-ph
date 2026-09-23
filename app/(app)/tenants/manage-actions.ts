@@ -19,6 +19,7 @@ import {
   deactivateTenant,
   updateTenant,
 } from "@/server/services/tenant.service";
+import { requireWritableLandlord } from "@/lib/auth/require-writable-landlord";
 
 function optional(
   formData: FormData,
@@ -38,7 +39,7 @@ export async function updateTenantAction(
 ): Promise<ActionState> {
   void _state;
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   try {
     await updateTenant({
@@ -116,7 +117,7 @@ export async function deactivateTenantAction(
   void _state;
   void _formData;
   const { landlord } =
-    await requireLandlord();
+    await requireWritableLandlord();
 
   try {
     await deactivateTenant({
