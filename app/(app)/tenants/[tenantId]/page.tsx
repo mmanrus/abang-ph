@@ -523,9 +523,6 @@ export default async function TenantPage({
                   tenantId={
                     tenant.id
                   }
-                  spaces={
-                    spaceOptions
-                  }
                 />
               </div>
             )}
