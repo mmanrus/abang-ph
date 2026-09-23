@@ -709,8 +709,9 @@ export default async function RentPage({
 
           <SearchButton
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800 sm:w-auto"
-          > 
-          <ReceiptText
+            searchIcon={false}
+          >
+            <ReceiptText
               size={17}
             />
             Generate {monthLabel}

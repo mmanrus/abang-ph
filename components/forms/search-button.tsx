@@ -14,6 +14,7 @@ type Props = {
   pendingText?: string;
   className?: string;
   disabled?: boolean;
+  searchIcon?: boolean;
 };
 
 /**
@@ -51,6 +52,7 @@ export function SearchButton({
   pendingText = "Searching...",
   className = colorClass,
   disabled = false,
+  searchIcon = true,
 }: Props) {
   const {
     pending,
@@ -78,6 +80,7 @@ export function SearchButton({
         <Search
           size={16}
           aria-hidden="true"
+          className={searchIcon ? undefined : "hidden"}
         />
       )}
 
