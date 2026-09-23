@@ -26,6 +26,7 @@ import {
 import {
   MultiChargePaymentForm,
 } from "@/components/payments/multi-charge-payment-form";
+import { SubmitButton } from "@/components/forms/submit-button";
 
 type Props = {
   searchParams: Promise<{
@@ -148,12 +149,11 @@ export default async function NewPaymentPage({
             />
           </div>
 
-          <button
-            type="submit"
+          <SubmitButton
             className="min-h-12 rounded-xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-zinc-800"
           >
             Load balance
-          </button>
+          </SubmitButton>
         </form>
       </section>
 

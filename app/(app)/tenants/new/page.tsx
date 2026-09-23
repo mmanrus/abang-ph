@@ -7,6 +7,7 @@ import {
 import {
   createTenant,
 } from "../actions";
+import { SubmitButton } from "@/components/forms/submit-button";
 
 export default function NewTenantPage() {
   return (
@@ -103,12 +104,24 @@ export default function NewTenantPage() {
         </section>
 
         <div className="flex justify-end border-t border-zinc-100 pt-5">
-          <button
-            type="submit"
-            className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-emerald-700"
+          <SubmitButton
+            pendingText="Creating tenant..."
+            className="
+              rounded-xl
+              bg-emerald-600
+              px-5
+              py-3
+              text-sm
+              font-medium
+              text-white
+              transition
+              hover:bg-emerald-700
+              disabled:cursor-not-allowed
+              disabled:opacity-60
+            "
           >
-            Add tenant
-          </button>
+            Create tenant
+          </SubmitButton>
         </div>
       </form>
     </div>

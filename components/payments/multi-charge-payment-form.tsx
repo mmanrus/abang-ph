@@ -15,6 +15,7 @@ import {
 import {
   recordMultiChargePayment,
 } from "@/app/(app)/payments/actions";
+import { SubmitButton } from "../forms/submit-button";
 
 type Charge = {
   id: string;
@@ -39,7 +40,7 @@ type Props = {
 
 type AllocationState = {
   [rentChargeId: string]:
-    string;
+  string;
 };
 
 function getMonthLabel(
@@ -176,7 +177,7 @@ export function MultiChargePaymentForm({
       ) {
         const value =
           allocations[
-            charge.id
+          charge.id
           ];
 
         if (!value) {
@@ -344,7 +345,7 @@ export function MultiChargePaymentForm({
 
               const value =
                 allocations[
-                  charge.id
+                charge.id
                 ] ?? "";
 
               return (
@@ -549,16 +550,25 @@ export function MultiChargePaymentForm({
               )}
             </p>
           </div>
-
-          <button
-            type="submit"
-            disabled={
-              total === 0n
-            }
-            className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-zinc-300"
+          <SubmitButton
+            disabled={total === 0n}
+            pendingText="Recording..."
+            className="
+              rounded-xl
+              bg-emerald-600
+              px-5
+              py-3
+              text-sm
+              font-medium
+              text-white
+              transition
+              hover:bg-emerald-700
+              disabled:cursor-not-allowed
+              disabled:opacity-60
+            "
           >
             Record payment
-          </button>
+          </SubmitButton>
         </div>
       </div>
     </form>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 import { createProperty } from "../actions";
+import { SubmitButton } from "@/components/forms/submit-button";
 
 export default function NewPropertyPage() {
   return (
@@ -103,12 +104,24 @@ export default function NewPropertyPage() {
         </div>
 
         <div className="flex justify-end border-t border-zinc-100 pt-5">
-          <button
-            type="submit"
-            className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white hover:bg-emerald-700"
-          >
+          <SubmitButton
+            pendingText="Creating property..."
+            className="
+                rounded-xl
+                bg-emerald-600
+                px-5
+                py-3
+                text-sm
+                font-medium
+                text-white
+                transition
+                hover:bg-emerald-700
+                disabled:cursor-not-allowed
+                disabled:opacity-60
+              "
+            >
             Create property
-          </button>
+          </SubmitButton>
         </div>
       </form>
     </div>
