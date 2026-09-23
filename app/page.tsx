@@ -20,6 +20,7 @@ import {
 import {
   getOptionalSession,
 } from "@/lib/auth/get-session";
+import { DemoLoginButton } from "@/components/demo/demo-login-button";
 /**
  * PUBLIC LANDING PAGE
  * -------------------
@@ -140,7 +141,7 @@ export default async function HomePage() {
                       size={17}
                     />
                   </Link>
-
+                  <DemoLoginButton />
                   <Link
                     href="/login"
                     className="inline-flex min-h-12 items-center justify-center rounded-xl border border-zinc-200 bg-white px-6 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
