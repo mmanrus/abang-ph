@@ -17,6 +17,7 @@ import {
 import {
   SubmitButton,
 } from "@/components/forms/submit-button";
+import { primaryButtonClass } from "@/lib/ui-classes";
 
 type TenantData = {
   id: string;
@@ -187,7 +188,7 @@ export function EditTenantForm({
       <div className="flex justify-end border-t border-zinc-100 pt-5">
         <SubmitButton
           pendingText="Saving changes..."
-          className="w-full rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+          className={primaryButtonClass}
         >
           Save changes
         </SubmitButton>

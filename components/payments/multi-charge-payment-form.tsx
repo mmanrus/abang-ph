@@ -16,6 +16,7 @@ import {
   recordMultiChargePayment,
 } from "@/app/(app)/payments/actions";
 import { SubmitButton } from "../forms/submit-button";
+import { primaryButtonClass } from "@/lib/ui-classes";
 
 type Charge = {
   id: string;
@@ -553,19 +554,7 @@ export function MultiChargePaymentForm({
           <SubmitButton
             disabled={total === 0n}
             pendingText="Recording..."
-            className="
-              rounded-xl
-              bg-emerald-600
-              px-5
-              py-3
-              text-sm
-              font-medium
-              text-white
-              transition
-              hover:bg-emerald-700
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
+            className={primaryButtonClass}
           >
             Record payment
           </SubmitButton>

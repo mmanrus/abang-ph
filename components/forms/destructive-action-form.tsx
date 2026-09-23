@@ -17,6 +17,7 @@ import {
 import {
   SubmitButton,
 } from "@/components/forms/submit-button";
+import { dangerButtonClass } from "@/lib/ui-classes";
 
 type Action = (
   previousState:
@@ -97,7 +98,7 @@ export function DestructiveActionForm({
         pendingText={
           pendingText
         }
-        className="rounded-xl border border-red-200 px-4 py-2.5 text-sm font-medium text-red-700 transition hover:bg-red-50 disabled:opacity-60"
+        className={dangerButtonClass}
       >
         {label}
       </SubmitButton>

@@ -1,24 +1,18 @@
 "use client";
 
 import {
-  useMemo,
   useState,
 } from "react";
 
 import {
   createLeaseAction,
 } from "@/app/(app)/tenants/actions";
-
-type SpaceOption = {
-  id: string;
-  label: string;
-  defaultRent: string | null;
-};
+import { SubmitButton } from "../forms/submit-button";
+import { SpacePickerField } from "../pickers/space-picker-field";
+import { primaryButtonClass } from "@/lib/ui-classes";
 
 type Props = {
   tenantId: string;
-
-  spaces: SpaceOption[];
 };
 
 function todayInputValue() {
@@ -42,43 +36,17 @@ function todayInputValue() {
 
 export function CreateLeaseForm({
   tenantId,
-  spaces,
 }: Props) {
-  const [spaceId, setSpaceId] =
-    useState("");
-
-  const selectedSpace =
-    useMemo(
-      () =>
-        spaces.find(
-          (space) =>
-            space.id ===
-            spaceId,
-        ),
-      [
-        spaces,
-        spaceId,
-      ],
-    );
-
+  /**
+   * NOTE: the property/space list used to be fetched upfront
+   * by the parent page and passed in as `spaces`. SpacePickerField
+   * now fetches properties and their available spaces on demand
+   * (via server actions), so this component no longer needs that
+   * prop -- and the parent page no longer needs to fetch it
+   * either.
+   */
   const [monthlyRent, setMonthlyRent] =
     useState("");
-
-  function handleSpaceChange(
-    id: string,
-  ) {
-    setSpaceId(id);
-
-    const space =
-      spaces.find(
-        (item) =>
-          item.id === id,
-      );
-
-    setMonthlyRent(
-      space?.defaultRent ?? "",
-    );
-  }
 
   return (
     <form
@@ -88,48 +56,18 @@ export function CreateLeaseForm({
       )}
       className="space-y-5"
     >
-      <div>
-        <label className="mb-2 block text-sm font-medium text-zinc-800">
-          Property / Room / Space
-        </label>
-
-        <select
-          name="rentableSpaceId"
-          required
-          value={spaceId}
-          onChange={(event) =>
-            handleSpaceChange(
-              event.target.value,
-            )
-          }
-          className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-500"
-        >
-          <option value="">
-            Select a rentable space
-          </option>
-
-          {spaces.map(
-            (space) => (
-              <option
-                key={space.id}
-                value={space.id}
-              >
-                {space.label}
-              </option>
-            ),
-          )}
-        </select>
-
-        {selectedSpace && (
-          <p className="mt-2 text-xs text-zinc-500">
-            Selected:
-            {" "}
-            {
-              selectedSpace.label
-            }
-          </p>
-        )}
-      </div>
+      <SpacePickerField
+        name="rentableSpaceId"
+        label="Property / Room / Space"
+        placeholder="Select a rentable space"
+        propertySearchPlaceholder="Search name, barangay, city, province..."
+        spaceSearchPlaceholder="Search room or space..."
+        onSelect={(space) =>
+          setMonthlyRent(
+            space.defaultRent ?? "",
+          )
+        }
+      />
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
@@ -248,15 +186,12 @@ export function CreateLeaseForm({
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={
-          spaces.length === 0
-        }
-        className="w-full rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-zinc-300"
+      <SubmitButton
+        pendingText="Creating lease..."
+        className={primaryButtonClass}
       >
         Create lease
-      </button>
+      </SubmitButton>
     </form>
   );
 }
