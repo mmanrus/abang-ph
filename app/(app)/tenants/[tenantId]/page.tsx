@@ -34,6 +34,7 @@ import { ConfirmForm } from "@/components/forms/confirm-form";
 import { DestructiveActionForm } from "@/components/forms/destructive-action-form";
 import { deactivateTenantAction } from "../manage-actions";
 import { SuccessBanner } from "@/components/feedback/success-banner";
+import { dangerButtonClass } from "@/lib/ui-classes";
 
 type Props = {
   params: Promise<{
@@ -425,7 +426,7 @@ export default async function TenantPage({
                       >
                         <SubmitButton
                           pendingText="Ending lease..."
-                          className="rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700 transition hover:bg-red-50 disabled:opacity-60"
+                          className={dangerButtonClass}
                         >
                           End lease
                         </SubmitButton>
@@ -521,9 +522,6 @@ export default async function TenantPage({
                 <CreateLeaseForm
                   tenantId={
                     tenant.id
-                  }
-                  spaces={
-                    spaceOptions
                   }
                 />
               </div>

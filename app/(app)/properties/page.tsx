@@ -15,6 +15,7 @@ import type {
   Metadata,
 } from "next";
 import { SearchButton } from "@/components/forms/search-button";
+import { iconButtonClass, inputClass } from "@/lib/ui-classes";
 
 export const metadata: Metadata = {
   title: "Properties",
@@ -156,7 +157,16 @@ export default async function PropertiesPage({
         method="GET"
         className="mt-6"
       >
-        <div className="flex max-w-2xl gap-2">
+        {/*
+          FULL-WIDTH SEARCH ROW
+          ----------------------
+
+          Previously capped at `max-w-2xl`, which left a visible
+          gap on the right instead of lining up with the header
+          row above it. No max-width here now, so it spans the
+          same width as everything else on the page.
+        */}
+        <div className="flex w-full gap-2">
           <div className="relative flex-1">
             <Search
               size={17}
@@ -168,13 +178,11 @@ export default async function PropertiesPage({
               name="q"
               defaultValue={q}
               placeholder="Search name, barangay, city, province..."
-              className="w-full rounded-xl border border-zinc-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+              className={`${inputClass} pl-11`}
             />
           </div>
 
-          <SearchButton
-            className="rounded-xl border border-zinc-200 bg-white px-5 py-3 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
-          >
+          <SearchButton>
             Search
           </SearchButton>
 
@@ -182,7 +190,7 @@ export default async function PropertiesPage({
             <Link
               href="/properties"
               aria-label="Clear search"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-500 transition hover:bg-zinc-50 hover:text-zinc-900"
+              className={iconButtonClass}
             >
               <X size={17} />
             </Link>

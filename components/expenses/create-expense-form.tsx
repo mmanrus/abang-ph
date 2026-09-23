@@ -22,6 +22,7 @@ import {
 import {
   EntityPickerField,
 } from "@/components/pickers/entity-picker-field";
+import { primaryButtonClass } from "@/lib/ui-classes";
 
 type Props = {
   today:
@@ -191,7 +192,7 @@ export function CreateExpenseForm({
 
       <SubmitButton
         pendingText="Saving expense..."
-        className="w-full rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+        className={primaryButtonClass}
       >
         Save expense
       </SubmitButton>

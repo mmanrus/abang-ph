@@ -32,6 +32,7 @@ import {
 } from "../actions";
 import { ConfirmForm } from "@/components/forms/confirm-form";
 import { SubmitButton } from "@/components/forms/submit-button";
+import { primaryButtonClass } from "@/lib/ui-classes";
 
 type Props = {
     params: Promise<{
@@ -364,7 +365,7 @@ export default async function PaymentPage({
 
                         <SubmitButton
                             pendingText="Voiding payment..."
-                            className="rounded-xl border border-red-200 px-4 py-2.5 text-sm font-medium text-red-700 transition hover:bg-red-50 disabled:opacity-60"
+                            className={primaryButtonClass}
                         >
                             Void payment
                         </SubmitButton>

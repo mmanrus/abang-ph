@@ -30,6 +30,7 @@ import {
 import {
   INITIAL_ACTION_STATE,
 } from "@/lib/action-state";
+import { secondaryButtonClass } from "@/lib/ui-classes";
 
 type SpaceStatus =
   | "AVAILABLE"
@@ -220,7 +221,7 @@ export function RentableSpaceEditor({
 
           <SubmitButton
             pendingText="Saving space..."
-            className="rounded-xl bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:opacity-60"
+            className={secondaryButtonClass}
           >
             Save changes
           </SubmitButton>

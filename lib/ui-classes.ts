@@ -52,3 +52,18 @@ export const secondaryButtonClass =
 
 export const dangerButtonClass =
   "inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-red-200 bg-white px-5 py-2.5 text-sm font-medium text-red-700 transition hover:bg-red-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-500/10 disabled:cursor-not-allowed disabled:opacity-60";
+
+  
+/**
+ * iconButtonClass
+ * ----------------
+ *
+ * For square, icon-only buttons/links — e.g. a "clear search"
+ * X button next to a search field. Sized to h-11/w-11 to line
+ * up with the 44px min-height used across inputs and the other
+ * button classes above, and uses the same zinc/border language
+ * as `secondaryButtonClass` so icon-only actions don't drift
+ * into a different visual style over time.
+ */
+export const iconButtonClass =
+  "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-500 transition hover:bg-zinc-50 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-zinc-500/10 disabled:cursor-not-allowed disabled:opacity-60";

@@ -260,6 +260,23 @@ export async function searchPropertyPicker({
               ).length;
           }
 
+          /**
+           * AVAILABILITY BADGE
+           * -------------------
+           *
+           * "Available" here means (total spaces - occupied
+           * spaces). This is what SpacePickerField's property
+           * step uses to render "N Available" / "Fully
+           * Occupied" on each property card.
+           */
+          const available =
+            spaces - occupied;
+
+          const badge =
+            available > 0
+              ? `${available} Available`
+              : "Fully Occupied";
+
           const location = [
             property.barangay,
             property.city,
@@ -294,6 +311,8 @@ export async function searchPropertyPicker({
 
               `${occupied} occupied`,
             ],
+
+            badge,
           };
         },
       ),
@@ -514,6 +533,237 @@ export async function searchTenantPicker({
                 : "INACTIVE",
           };
         },
+      ),
+  };
+}
+
+/**
+ * ============================================================
+ * RENTABLE SPACE PICKER
+ * ============================================================
+ *
+ * Step 2 of the lease-creation flow: once a property has been
+ * chosen (searchPropertyPicker above), this returns that
+ * property's AVAILABLE rentable spaces only -- occupied and
+ * inactive spaces are deliberately excluded here, since this
+ * picker exists specifically to assign a NEW lease to a space
+ * nobody is currently renting.
+ *
+ * This intentionally does NOT reuse the generic PickerResult /
+ * PickerOption shape from "@/lib/picker", because each result
+ * needs to carry `defaultRent` so the lease form can prefill
+ * "Monthly rent" the moment a space is chosen -- that's not
+ * part of the generic picker shape used by property/tenant.
+ */
+
+export type RentableSpacePickerItem = {
+  id: string;
+  title: string;
+  subtitle: string;
+  details: string[];
+  defaultRent: string | null;
+};
+
+export type RentableSpacePickerResult = {
+  page: number;
+  totalPages: number;
+  totalItems: number;
+  items: RentableSpacePickerItem[];
+};
+
+export async function searchRentableSpacePicker({
+  landlordAccountId,
+  propertyId,
+  q,
+  page,
+}: {
+  landlordAccountId:
+    string;
+
+  propertyId:
+    string;
+
+  q: string;
+
+  page: number;
+}): Promise<RentableSpacePickerResult> {
+  const search =
+    normalizeSearch(q);
+
+  const requestedPage =
+    normalizePage(page);
+
+  const EMPTY: RentableSpacePickerResult = {
+    page: 1,
+    totalPages: 1,
+    totalItems: 0,
+    items: [],
+  };
+
+  /**
+   * DATA ISOLATION:
+   *
+   * Confirm the property actually belongs to this landlord
+   * BEFORE returning any of its spaces. Without this check,
+   * a landlord could pass an arbitrary propertyId and read
+   * another landlord's rentable spaces.
+   */
+  const property =
+    await prisma.property.findFirst({
+      where: {
+        id:
+          propertyId,
+
+        landlordAccountId,
+
+        deletedAt:
+          null,
+      },
+
+      select: {
+        id: true,
+      },
+    });
+
+  if (!property) {
+    return EMPTY;
+  }
+
+  const where = {
+    status:
+      "AVAILABLE",
+
+    deletedAt:
+      null,
+
+    unit: {
+      propertyId,
+
+      deletedAt:
+        null,
+    },
+
+    ...(search
+      ? {
+          OR: [
+            {
+              name: {
+                contains:
+                  search,
+
+                mode:
+                  "insensitive",
+              },
+            },
+
+            {
+              unit: {
+                name: {
+                  contains:
+                    search,
+
+                  mode:
+                    "insensitive",
+                },
+              },
+            },
+          ],
+        }
+      : {}),
+  } satisfies Prisma.RentableSpaceWhereInput;
+
+  const totalItems =
+    await prisma.rentableSpace.count({
+      where,
+    });
+
+  const totalPages =
+    getTotalPages(
+      totalItems,
+      PICKER_PAGE_SIZE,
+    );
+
+  const safePage =
+    Math.min(
+      requestedPage,
+      totalPages,
+    );
+
+  const spaces =
+    await prisma.rentableSpace.findMany({
+      where,
+
+      skip:
+        getSkip(
+          safePage,
+          PICKER_PAGE_SIZE,
+        ),
+
+      take:
+        PICKER_PAGE_SIZE,
+
+      orderBy: [
+        {
+          unit: {
+            name:
+              "asc",
+          },
+        },
+
+        {
+          name:
+            "asc",
+        },
+
+        {
+          id:
+            "asc",
+        },
+      ],
+
+      select: {
+        id: true,
+        name: true,
+
+        defaultRent:
+          true,
+
+        unit: {
+          select: {
+            name:
+              true,
+          },
+        },
+      },
+    });
+
+  return {
+    page:
+      safePage,
+
+    totalPages,
+
+    totalItems,
+
+    items:
+      spaces.map(
+        (space) => ({
+          id:
+            space.id,
+
+          title:
+            space.name,
+
+          subtitle:
+            space.unit.name,
+
+          details: [],
+
+          defaultRent:
+            space.defaultRent
+              ? space.defaultRent.toString()
+              : null,
+        }),
       ),
   };
 }

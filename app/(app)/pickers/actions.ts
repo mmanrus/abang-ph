@@ -7,6 +7,7 @@ import {
 import {
   searchPropertyPicker,
   searchTenantPicker,
+  searchRentableSpacePicker,
 } from "@/server/services/picker.service";
 
 type PickerRequest = {
@@ -58,6 +59,44 @@ export async function searchTenantPickerAction(
     q:
       input.q,
 
+    page:
+      input.page,
+  });
+}
+
+
+/**
+ * SECURITY:
+ *
+ * Same pattern as above -- landlordAccountId comes from the
+ * authenticated session, never from the client. propertyId IS
+ * a client-supplied argument (the landlord picked it in step 1
+ * of the lease-creation picker), so searchRentableSpacePicker
+ * re-verifies that property actually belongs to this landlord
+ * before returning any of its spaces.
+ */
+export async function searchRentableSpacePickerAction(
+  input:
+    PickerRequest & {
+      propertyId:
+        string;
+    },
+) {
+  const {
+    landlord,
+  } =
+    await requireLandlord();
+ 
+  return searchRentableSpacePicker({
+    landlordAccountId:
+      landlord.id,
+ 
+    propertyId:
+      input.propertyId,
+ 
+    q:
+      input.q,
+ 
     page:
       input.page,
   });

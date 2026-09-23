@@ -34,6 +34,7 @@ import {
 import {
   RentableSpaceEditor,
 } from "@/components/properties/rentable-space-editor";
+import { primaryButtonClass } from "@/lib/ui-classes";
 
 type SpaceStatus =
   | "AVAILABLE"
@@ -259,7 +260,7 @@ export function UnitManagementCard({
 
               <SubmitButton
                 pendingText="Saving room..."
-                className="rounded-xl bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:opacity-60"
+                className={primaryButtonClass}
               >
                 Save room
               </SubmitButton>

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import {
+    useEffect,
     useState,
 } from "react";
 
@@ -20,6 +21,75 @@ type Props = {
     signedIn: boolean;
 };
 
+/**
+ * DESKTOP_BREAKPOINT
+ * -------------------
+ *
+ * Matches Tailwind's default `md` breakpoint (768px). Kept as a
+ * JS constant because we drive the desktop/mobile split with
+ * `matchMedia` below rather than trusting Tailwind's `md:`
+ * variant alone — see note in `useIsDesktop`.
+ */
+const DESKTOP_BREAKPOINT_QUERY = "(min-width: 768px)";
+
+/**
+ * useIsDesktop
+ * -------------
+ *
+ * We *also* use Tailwind's `md:` utility classes below (belt and
+ * suspenders), but this hook is the source of truth for whether
+ * we render the inline desktop nav or the hamburger. Some
+ * environments (stale build caches, certain browser extensions,
+ * etc.) can cause a `md:` media-query utility to silently fail to
+ * apply even though the actual viewport is well above the
+ * breakpoint. Driving the split from `window.matchMedia` in JS
+ * sidesteps that entirely, since it reads the real viewport
+ * directly instead of relying on a CSS rule having been generated
+ * and applied correctly.
+ *
+ * Returns `null` during SSR / before mount (we don't know the
+ * viewport yet), then `true`/`false` once mounted.
+ */
+function useIsDesktop() {
+    const [
+        isDesktop,
+        setIsDesktop,
+    ] = useState<boolean | null>(null);
+
+    useEffect(() => {
+        const mediaQuery =
+            window.matchMedia(
+                DESKTOP_BREAKPOINT_QUERY,
+            );
+
+        setIsDesktop(
+            mediaQuery.matches,
+        );
+
+        function handleChange(
+            event: MediaQueryListEvent,
+        ) {
+            setIsDesktop(
+                event.matches,
+            );
+        }
+
+        mediaQuery.addEventListener(
+            "change",
+            handleChange,
+        );
+
+        return () => {
+            mediaQuery.removeEventListener(
+                "change",
+                handleChange,
+            );
+        };
+    }, []);
+
+    return isDesktop;
+}
+
 export function PublicNavigation({
     signedIn,
 }: Props) {
@@ -28,19 +98,27 @@ export function PublicNavigation({
         setMenuOpen,
     ] = useState(false);
 
+    const isDesktop =
+        useIsDesktop();
+
     function closeMenu() {
         setMenuOpen(false);
     }
 
-    return (
-        <div className="relative ml-auto shrink-0">
-            {/* ========================================= */}
-            {/* DESKTOP NAVIGATION                        */}
-            {/* ========================================= */}
+    // Before mount we don't know the viewport yet. Render nothing
+    // in that brief window rather than guessing, to avoid a flash
+    // of the wrong nav variant.
+    if (isDesktop === null) {
+        return (
+            <div className="ml-auto h-10 w-10 shrink-0" />
+        );
+    }
 
+    if (isDesktop) {
+        return (
             <nav
                 aria-label="Public navigation"
-                className="hidden items-center gap-2 md:flex"
+                className="ml-auto flex shrink-0 items-center gap-2"
             >
                 {signedIn ? (
                     <Link
@@ -122,7 +200,11 @@ export function PublicNavigation({
                     </>
                 )}
             </nav>
+        );
+    }
 
+    return (
+        <div className="relative ml-auto shrink-0">
             {/* ========================================= */}
             {/* MOBILE HAMBURGER                          */}
             {/* ========================================= */}
@@ -155,7 +237,6 @@ export function PublicNavigation({
           text-zinc-700
           transition
           hover:bg-zinc-50
-          md:hidden
         "
             >
                 {menuOpen ? (
@@ -192,7 +273,6 @@ export function PublicNavigation({
             bg-white
             p-2
             shadow-xl
-            md:hidden
         "
                 >
                     {signedIn ? (
