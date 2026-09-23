@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import {
   CircleDollarSign,
@@ -60,7 +59,7 @@ import {
   generateRentChargesAction,
 } from "./actions";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { SearchButton } from "@/components/forms/search-button";
+import { SubmitButton } from "@/components/forms/submit-button";
 
 type Props = {
   searchParams: Promise<{
@@ -391,6 +390,43 @@ export default async function RentPage({
       )
     );
   }
+
+  function getStatusTone(
+    charge: RentChargeRow,
+  ) {
+    return charge.status ===
+      "OVERDUE"
+      ? "red"
+      : charge.status ===
+        "PARTIALLY_PAID"
+        ? "amber"
+        : charge.status ===
+          "PAID"
+          ? "green"
+          : "gray";
+  }
+
+  function formatDueDate(
+    charge: RentChargeRow,
+  ) {
+    return charge.dueDate.toLocaleDateString(
+      "en-PH",
+      {
+        year:
+          "numeric",
+
+        month:
+          "short",
+
+        day:
+          "numeric",
+
+        timeZone:
+          "Asia/Manila",
+      },
+    );
+  }
+
   const rentColumns:
     DataTableColumn<RentChargeRow>[] =
     [
@@ -468,21 +504,8 @@ export default async function RentPage({
           charge,
         ) => (
           <span className="whitespace-nowrap text-zinc-600">
-            {charge.dueDate.toLocaleDateString(
-              "en-PH",
-              {
-                year:
-                  "numeric",
-
-                month:
-                  "short",
-
-                day:
-                  "numeric",
-
-                timeZone:
-                  "Asia/Manila",
-              },
+            {formatDueDate(
+              charge,
             )}
           </span>
         ),
@@ -592,18 +615,9 @@ export default async function RentPage({
           charge,
         ) => (
           <StatusBadge
-            tone={
-              charge.status ===
-                "OVERDUE"
-                ? "red"
-                : charge.status ===
-                  "PARTIALLY_PAID"
-                  ? "amber"
-                  : charge.status ===
-                    "PAID"
-                    ? "green"
-                    : "gray"
-            }
+            tone={getStatusTone(
+              charge,
+            )}
           >
             {charge.status}
           </StatusBadge>
@@ -690,6 +704,13 @@ export default async function RentPage({
           </div>
         </div>
 
+        {/*
+          NOTE: this is a plain submit action ("generate this
+          month's rent charges"), not a search-bar companion
+          button, so it uses SubmitButton -- its label stays
+          visible at every screen width, unlike SearchButton
+          which is deliberately icon-only on mobile.
+        */}
         <form
           action={
             generateRentChargesAction
@@ -707,14 +728,15 @@ export default async function RentPage({
             value={month}
           />
 
-          <SearchButton
+          <SubmitButton
+            pendingText="Generating..."
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800 sm:w-auto"
-          > 
-          <ReceiptText
+          >
+            <ReceiptText
               size={17}
             />
             Generate {monthLabel}
-          </SearchButton>
+          </SubmitButton>
         </form>
       </div>
 
@@ -778,6 +800,10 @@ export default async function RentPage({
           <div className="space-y-4 lg:hidden">
             {charges.map(
               (charge) => {
+                const balance =
+                  getBalanceForCharge(
+                    charge,
+                  );
 
                 return (
                   <article
@@ -786,7 +812,134 @@ export default async function RentPage({
                     }
                     className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm sm:p-6"
                   >
-                    {/* Keep your existing mobile card contents here. */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-zinc-950">
+                          {
+                            charge
+                              .lease
+                              .tenant
+                              .fullName
+                          }
+                        </p>
+
+                        <p className="mt-1 truncate text-sm text-zinc-500">
+                          {
+                            charge
+                              .lease
+                              .rentableSpace
+                              .unit
+                              .property
+                              .name
+                          }
+
+                          {" · "}
+
+                          {
+                            charge
+                              .lease
+                              .rentableSpace
+                              .unit
+                              .name
+                          }
+
+                          {" · "}
+
+                          {
+                            charge
+                              .lease
+                              .rentableSpace
+                              .name
+                          }
+                        </p>
+                      </div>
+
+                      <StatusBadge
+                        tone={getStatusTone(
+                          charge,
+                        )}
+                      >
+                        {
+                          charge.status
+                        }
+                      </StatusBadge>
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-3 gap-3 border-t border-zinc-100 pt-4">
+                      <div>
+                        <p className="text-xs text-zinc-500">
+                          Rent
+                        </p>
+
+                        <p className="mt-1 font-medium tabular-nums text-zinc-900">
+                          {formatPHP(
+                            moneyToCents(
+                              charge.amount,
+                            ),
+                          )}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs text-zinc-500">
+                          Paid
+                        </p>
+
+                        <p className="mt-1 tabular-nums text-emerald-700">
+                          {formatPHP(
+                            getPaidForCharge(
+                              charge,
+                            ),
+                          )}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs text-zinc-500">
+                          Balance
+                        </p>
+
+                        <p
+                          className={[
+                            "mt-1 font-semibold tabular-nums",
+
+                            balance >
+                            0n
+                              ? "text-red-700"
+                              : "text-zinc-500",
+                          ].join(
+                            " ",
+                          )}
+                        >
+                          {formatPHP(
+                            balance,
+                          )}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-between border-t border-zinc-100 pt-4 text-sm">
+                      <span className="text-zinc-500">
+                        Due{" "}
+                        {formatDueDate(
+                          charge,
+                        )}
+                      </span>
+
+                      {balance >
+                      0n ? (
+                        <Link
+                          href={`/payments/new?tenantId=${charge.lease.tenant.id}`}
+                          className="font-medium text-emerald-700 hover:text-emerald-800"
+                        >
+                          Record payment
+                        </Link>
+                      ) : (
+                        <span className="text-zinc-400">
+                          Paid
+                        </span>
+                      )}
+                    </div>
                   </article>
                 );
               },
@@ -857,48 +1010,3 @@ function Metric({
     </div>
   );
 }
-
-
-
-/**
-function StatusBadge({
-  status,
-}: {
-  status: string;
-}) {
-  const styles: Record<
-    string,
-    string
-  > = {
-    PAID:
-      "bg-emerald-50 text-emerald-700",
-
-    PARTIALLY_PAID:
-      "bg-amber-50 text-amber-700",
-
-    OVERDUE:
-      "bg-red-50 text-red-700",
-
-    DUE:
-      "bg-orange-50 text-orange-700",
-
-    UPCOMING:
-      "bg-blue-50 text-blue-700",
-  };
-
-  return (
-    <span
-      className={[
-        "rounded-full px-2.5 py-1 text-xs font-medium",
-        styles[status] ??
-        "bg-zinc-100 text-zinc-600",
-      ].join(" ")}
-    >
-      {status.replaceAll(
-        "_",
-        " ",
-      )}
-    </span>
-  );
-}
-   */
